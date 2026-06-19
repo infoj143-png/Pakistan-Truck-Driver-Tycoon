@@ -11,17 +11,69 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_y7r3s")
 
-[node name="Label" type="Label" parent="."]
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.15, 0.1, 1)
+
+[node name="Title" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -28.0
-offset_top = 50.0
-offset_right = 28.0
-offset_bottom = 73.0
+offset_left = -200.0
+offset_top = 30.0
+offset_right = 200.0
+offset_bottom = 85.0
 grow_horizontal = 2
-text = "Garage"
+theme_override_font_sizes/font_size = 40
+text = "TRUCK GARAGE"
+horizontal_alignment = 1
+
+[node name="MoneyLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -250.0
+offset_top = 40.0
+offset_right = -50.0
+offset_bottom = 75.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "Rs. 1000"
+horizontal_alignment = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -225.0
+offset_bottom = 225.0
+grow_horizontal = 2
+grow_vertical = 2
+vertical_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_right = 50
+
+[node name="TruckList" type="HBoxContainer" parent="ScrollContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 30
 
 [node name="Back" type="Button" parent="."]
 layout_mode = 1
@@ -30,12 +82,13 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -22.5
-offset_top = -100.0
-offset_right = 22.5
-offset_bottom = -69.0
+offset_left = -60.0
+offset_top = -80.0
+offset_right = 60.0
+offset_bottom = -30.0
 grow_horizontal = 2
 grow_vertical = 0
-text = "Back"
+theme_override_font_sizes/font_size = 20
+text = "BACK"
 
 [connection signal="pressed" from="Back" to="." method="_on_back_pressed"]

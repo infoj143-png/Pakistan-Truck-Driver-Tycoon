@@ -9,7 +9,7 @@ func _ready():
 	GameManager.stats_changed.connect(update_ui)
 
 func update_ui():
-	money_label.text = "Money: $" + str(GameManager.money)
+	money_label.text = "Rs. " + str(GameManager.money)
 	xp_label.text = "XP: " + str(GameManager.xp)
 	level_label.text = "Level: " + str(GameManager.level)
 

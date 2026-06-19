@@ -1,0 +1,220 @@
+[gd_scene load_steps=2 format=3 uid="uid://be8x6w8j0n6v6"]
+
+[ext_resource type="Script" path="res://scripts/TruckCard.gd" id="1_truckcard"]
+
+[node name="TruckCard" type="PanelContainer"]
+custom_minimum_size = Vector2(320, 480)
+offset_right = 320.0
+offset_bottom = 480.0
+theme_override_styles/panel = null
+script = ExtResource("1_truckcard")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Truck Name"
+horizontal_alignment = 1
+
+[node name="IconRect" type="ColorRect" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+color = Color(0.2, 0.4, 0.2, 1)
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/IconRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "TRUCK ICON"
+
+[node name="PriceLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+text = "Rs. 0"
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "BUY TRUCK"
+
+[node name="SelectButton" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SELECT"
+
+[node name="StatsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="SpeedRow" type="VBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer/SpeedRow"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/StatsContainer/SpeedRow/HBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+text = "Speed"
+
+[node name="SpeedValue" type="Label" parent="MarginContainer/VBoxContainer/StatsContainer/SpeedRow/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "300"
+horizontal_alignment = 2
+
+[node name="HBox2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer/SpeedRow"]
+layout_mode = 2
+
+[node name="SpeedBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/StatsContainer/SpeedRow/HBox2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+show_percentage = false
+
+[node name="UpgradeSpeedBtn" type="Button" parent="MarginContainer/VBoxContainer/StatsContainer/SpeedRow/HBox2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "UP"
+
+[node name="FuelRow" type="VBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer/FuelRow"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/StatsContainer/FuelRow/HBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+text = "Fuel"
+
+[node name="FuelValue" type="Label" parent="MarginContainer/VBoxContainer/StatsContainer/FuelRow/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "100"
+horizontal_alignment = 2
+
+[node name="HBox2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer/FuelRow"]
+layout_mode = 2
+
+[node name="FuelBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/StatsContainer/FuelRow/HBox2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+show_percentage = false
+
+[node name="UpgradeFuelBtn" type="Button" parent="MarginContainer/VBoxContainer/StatsContainer/FuelRow/HBox2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "UP"
+
+[node name="CargoRow" type="VBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer/CargoRow"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/StatsContainer/CargoRow/HBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+text = "Cargo"
+
+[node name="CargoValue" type="Label" parent="MarginContainer/VBoxContainer/StatsContainer/CargoRow/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "1.0x"
+horizontal_alignment = 2
+
+[node name="HBox2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer/CargoRow"]
+layout_mode = 2
+
+[node name="CargoBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/StatsContainer/CargoRow/HBox2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+show_percentage = false
+
+[node name="UpgradeCargoBtn" type="Button" parent="MarginContainer/VBoxContainer/StatsContainer/CargoRow/HBox2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "UP"
+
+[node name="DurabilityRow" type="VBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer/DurabilityRow"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/StatsContainer/DurabilityRow/HBox"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+text = "Dura"
+
+[node name="DurabilityValue" type="Label" parent="MarginContainer/VBoxContainer/StatsContainer/DurabilityRow/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "100"
+horizontal_alignment = 2
+
+[node name="HBox2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/StatsContainer/DurabilityRow"]
+layout_mode = 2
+
+[node name="DurabilityBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/StatsContainer/DurabilityRow/HBox2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+show_percentage = false
+
+[node name="UpgradeDurabilityBtn" type="Button" parent="MarginContainer/VBoxContainer/StatsContainer/DurabilityRow/HBox2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "UP"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BuyButton" to="." method="_on_buy_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SelectButton" to="." method="_on_select_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/StatsContainer/SpeedRow/HBox2/UpgradeSpeedBtn" to="." method="_on_upgrade_speed_btn_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/StatsContainer/FuelRow/HBox2/UpgradeFuelBtn" to="." method="_on_upgrade_fuel_btn_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/StatsContainer/CargoRow/HBox2/UpgradeCargoBtn" to="." method="_on_upgrade_cargo_btn_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/StatsContainer/DurabilityRow/HBox2/UpgradeDurabilityBtn" to="." method="_on_upgrade_durability_btn_pressed"]
