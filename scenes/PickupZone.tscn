@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dg7i4u5l1r8k4"]
+
+[ext_resource type="Script" path="res://scripts/Zone.gd" id="1_z2u3v"]
+[ext_resource type="Texture2D" uid="uid://b5t8m6k2f7u8g" path="res://assets/pickup.svg" id="2_p4s5t"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_z1x2y"]
+radius = 64.0
+
+[node name="PickupZone" type="Area2D"]
+script = ExtResource("1_z2u3v")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_p4s5t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_z1x2y")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

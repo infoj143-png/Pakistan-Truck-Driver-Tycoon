@@ -7,6 +7,11 @@ var money: int = 1000
 var xp: int = 0
 var level: int = 1
 
+# Gameplay Prototype Stats
+var fuel: float = 100.0
+var max_fuel: float = 100.0
+var has_cargo: bool = false
+
 signal stats_changed
 
 func _ready():
@@ -37,7 +42,8 @@ func save_game():
 		var data = {
 			"money": money,
 			"xp": xp,
-			"level": level
+			"level": level,
+			"fuel": fuel
 		}
 		file.store_var(data)
 		file.close()
@@ -53,5 +59,6 @@ func load_game():
 			money = data.get("money", 1000)
 			xp = data.get("xp", 0)
 			level = data.get("level", 1)
+			fuel = data.get("fuel", 100.0)
 		file.close()
 		stats_changed.emit()

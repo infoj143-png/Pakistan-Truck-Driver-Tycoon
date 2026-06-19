@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://dg7i4u5l1r8k6"]
+
+[ext_resource type="PackedScene" uid="uid://dg7i4u5l1r8k3" path="res://scenes/Truck.tscn" id="1_t2u3v"]
+[ext_resource type="Texture2D" uid="uid://b5t8m6k2f7u8i" path="res://assets/road.svg" id="2_r4s5t"]
+[ext_resource type="PackedScene" uid="uid://dg7i4u5l1r8k4" path="res://scenes/PickupZone.tscn" id="3_p4s5t"]
+[ext_resource type="PackedScene" uid="uid://dg7i4u5l1r8k5" path="res://scenes/DeliveryZone.tscn" id="4_d4s5t"]
+
+[node name="World" type="Node2D"]
+
+[node name="Roads" type="Node2D" parent="."]
+
+[node name="Road" type="Sprite2D" parent="Roads"]
+texture_repeat = 2
+texture = ExtResource("2_r4s5t")
+region_enabled = true
+region_rect = Rect2(0, 0, 2048, 2048)
+
+[node name="PickupZone" parent="." instance=ExtResource("3_p4s5t")]
+position = Vector2(-500, 0)
+
+[node name="DeliveryZone" parent="." instance=ExtResource("4_d4s5t")]
+position = Vector2(500, 0)
+
+[node name="Truck" parent="." instance=ExtResource("1_t2u3v")]
+position = Vector2(0, 200)

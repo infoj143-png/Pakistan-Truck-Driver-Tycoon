@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://dg7i4u5l1r8k3"]
+
+[ext_resource type="Script" path="res://scripts/Truck.gd" id="1_t2u3v"]
+[ext_resource type="Texture2D" uid="uid://b5t8m6k2f7u8f" path="res://assets/truck.svg" id="2_r4s5t"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w3e4r"]
+size = Vector2(64, 128)
+
+[node name="Truck" type="CharacterBody2D"]
+script = ExtResource("1_t2u3v")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_r4s5t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_w3e4r")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.8, 0.8)
+position_smoothing_enabled = true

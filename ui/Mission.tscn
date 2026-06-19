@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c8j6y7k3m2n1p"]
+[gd_scene load_steps=3 format=3 uid="uid://c8j6y7k3m2n1p"]
 
 [ext_resource type="Script" path="res://scripts/Mission.gd" id="1_m2n3p"]
+[ext_resource type="PackedScene" uid="uid://dg7i4u5l1r8k6" path="res://scenes/World.tscn" id="2_w4r5t"]
 
 [node name="Mission" type="Control"]
 layout_mode = 3
@@ -11,31 +12,142 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_m2n3p")
 
-[node name="Label" type="Label" parent="."]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -34.0
-offset_top = 50.0
-offset_right = 34.0
-offset_bottom = 73.0
-grow_horizontal = 2
-text = "Missions"
-
-[node name="Back" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -22.5
-offset_top = -100.0
-offset_right = 22.5
-offset_bottom = -69.0
 grow_horizontal = 2
-grow_vertical = 0
-text = "Back"
+grow_vertical = 2
+stretch = true
 
-[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="World" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_w4r5t")]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="FuelLabel" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Fuel"
+
+[node name="FuelBar" type="ProgressBar" parent="HUD/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+value = 100.0
+
+[node name="CargoStatus" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Cargo: None"
+
+[node name="MissionCompletePopup" type="Panel" parent="HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MissionCompletePopup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="HUD/MissionCompletePopup/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Mission Complete!"
+horizontal_alignment = 1
+
+[node name="RewardLabel" type="Label" parent="HUD/MissionCompletePopup/VBoxContainer"]
+layout_mode = 2
+text = "Reward: $500"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="HUD/MissionCompletePopup/VBoxContainer"]
+layout_mode = 2
+text = "Continue"
+
+[node name="GameOverPopup" type="Panel" parent="HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/GameOverPopup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="HUD/GameOverPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Out of Fuel!"
+horizontal_alignment = 1
+
+[node name="RetryButton" type="Button" parent="HUD/GameOverPopup/VBoxContainer"]
+layout_mode = 2
+text = "Retry"
+
+[node name="BackButton" type="Button" parent="HUD/GameOverPopup/VBoxContainer"]
+layout_mode = 2
+text = "Back to Menu"
+
+[connection signal="pressed" from="HUD/MissionCompletePopup/VBoxContainer/ContinueButton" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="HUD/GameOverPopup/VBoxContainer/RetryButton" to="." method="_on_retry_pressed"]
+[connection signal="pressed" from="HUD/GameOverPopup/VBoxContainer/BackButton" to="." method="_on_back_pressed"]
