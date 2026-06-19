@@ -9,7 +9,7 @@ func _ready():
 	update_ui()
 
 func update_ui():
-	money_label.text = "Money: $" + str(GameManager.money)
+	money_label.text = "Rs. " + str(GameManager.money)
 	xp_label.text = "XP: " + str(GameManager.xp) + " (Lvl " + str(GameManager.level) + ")"
 
 	# Try to find truck in scene to update fuel

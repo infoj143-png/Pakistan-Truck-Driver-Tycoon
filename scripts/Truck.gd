@@ -11,7 +11,17 @@ var fuel = 100.0
 var cargo_loaded = false
 
 func _ready():
+	var stats = GameManager.get_truck_stats(GameManager.selected_truck)
+	if stats:
+		speed = stats.speed
+		max_fuel = stats.fuel
+		# Durability could be used for damage logic, but not yet implemented in base game
+
 	fuel = GameManager.fuel
+	if fuel > max_fuel:
+		fuel = max_fuel
+		GameManager.fuel = fuel
+
 	add_to_group("truck")
 
 func _physics_process(delta):
