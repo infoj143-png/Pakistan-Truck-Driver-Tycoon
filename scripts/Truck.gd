@@ -23,7 +23,14 @@ func _ready():
 		fuel = max_fuel
 		GameManager.fuel = fuel
 
+	apply_skin(GameManager.selected_skin)
+	GameManager.skin_changed.connect(apply_skin)
+
 	add_to_group("truck")
+
+func apply_skin(skin_id: String):
+	if GameManager.SKINS.has(skin_id):
+		$Sprite2D.self_modulate = GameManager.SKINS[skin_id].color
 
 func _physics_process(delta):
 	if fuel <= 0:

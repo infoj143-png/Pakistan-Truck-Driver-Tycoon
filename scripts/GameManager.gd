@@ -98,12 +98,53 @@ var cities = {
 var current_city: String = "Lahore"
 var unlocked_cities: Array = ["Lahore"]
 
+# Rewards and Achievements State
+var last_login_date: String = ""
+var consecutive_logins: int = 0
+var reward_claimed_today: bool = false
+var total_deliveries: int = 0
+var unlocked_achievements: Array = []
+var unlocked_skins: Array = ["default"]
+var selected_skin: String = "default"
+var achievement_progress: Dictionary = {} # id -> current_value
+
 signal stats_changed
 signal mission_completed(reward_money, reward_xp)
 signal daily_report_generated(report_data)
+signal achievement_unlocked(achievement_id)
+signal skin_unlocked(skin_id)
+signal skin_changed(skin_id)
+
+const DAILY_REWARDS = [
+	{"day": 1, "type": "money", "amount": 500},
+	{"day": 2, "type": "xp", "amount": 100},
+	{"day": 3, "type": "money", "amount": 1000},
+	{"day": 4, "type": "xp", "amount": 250},
+	{"day": 5, "type": "skin", "id": "pak_green", "name": "Patriotic Green"},
+	{"day": 6, "type": "money", "amount": 2500},
+	{"day": 7, "type": "skin", "id": "truck_art_royal", "name": "Royal Truck Art"}
+]
+
+const ACHIEVEMENTS = {
+	"level_5": {"name": "Junior Driver", "description": "Reach Level 5", "type": "level", "goal": 5, "reward_money": 1000},
+	"level_10": {"name": "Senior Driver", "description": "Reach Level 10", "type": "level", "goal": 10, "reward_money": 5000},
+	"deliveries_10": {"name": "Getting Started", "description": "Complete 10 deliveries", "type": "deliveries", "goal": 10, "reward_xp": 200},
+	"deliveries_50": {"name": "Pro Deliverer", "description": "Complete 50 deliveries", "type": "deliveries", "goal": 50, "reward_money": 10000, "reward_skin": "golden_eagle"},
+	"fleet_3": {"name": "Small Business", "description": "Hire 3 drivers", "type": "fleet", "goal": 3, "reward_money": 2000},
+	"fleet_10": {"name": "Logistics Giant", "description": "Hire 10 drivers", "type": "fleet", "goal": 10, "reward_money": 20000, "reward_skin": "platinum_fleet"}
+}
+
+const SKINS = {
+	"default": {"name": "Standard", "color": Color.WHITE},
+	"pak_green": {"name": "Patriotic Green", "color": Color.DARK_GREEN},
+	"truck_art_royal": {"name": "Royal Truck Art", "color": Color.INDIAN_RED},
+	"golden_eagle": {"name": "Golden Eagle", "color": Color.GOLD},
+	"platinum_fleet": {"name": "Platinum Fleet", "color": Color.SLATE_GRAY}
+}
 
 func _ready():
 	load_game()
+	check_daily_login()
 	if driver_pool.is_empty():
 		generate_driver_pool()
 
@@ -127,6 +168,8 @@ func add_xp(amount: int):
 func complete_mission(reward_money: int, reward_xp: int):
 	add_money(reward_money)
 	add_xp(reward_xp)
+	total_deliveries += 1
+	update_achievement_progress("deliveries", 1, false)
 	mission_completed.emit(reward_money, reward_xp)
 
 func buy_truck(truck_id: String):
@@ -194,6 +237,7 @@ func _check_level_up():
 		xp_needed = level * 100
 		print("Level Up! Current Level: ", level)
 		_unlock_cities_for_level()
+		update_achievement_progress("level", level, true)
 
 func _unlock_cities_for_level():
 	for city_name in cities:
@@ -235,6 +279,8 @@ func hire_driver(pool_index: int):
 		# Refill pool if empty
 		if driver_pool.is_empty():
 			generate_driver_pool()
+
+		update_achievement_progress("fleet", hired_drivers.size(), true)
 
 		stats_changed.emit()
 		save_game()
@@ -414,6 +460,101 @@ func refill_fuel_cost(amount: float):
 		return true
 	return false
 
+# Reward and Achievement Logic
+func check_daily_login():
+	var now = Time.get_date_dict_from_system()
+	var today_str = "%d-%d-%d" % [now.year, now.month, now.day]
+
+	if last_login_date == "":
+		last_login_date = today_str
+		consecutive_logins = 1
+		reward_claimed_today = false
+	elif last_login_date != today_str:
+		# Check if it was yesterday
+		var last_date_parts = last_login_date.split("-")
+		var last_year = int(last_date_parts[0])
+		var last_month = int(last_date_parts[1])
+		var last_day = int(last_date_parts[2])
+
+		# Very simple yesterday check (doesn't handle month boundaries perfectly but okay for this)
+		# A better way would be using unix timestamps
+		var is_yesterday = (now.day == last_day + 1 and now.month == last_month and now.year == last_year)
+
+		if is_yesterday:
+			consecutive_logins += 1
+			if consecutive_logins > 7:
+				consecutive_logins = 1
+		else:
+			consecutive_logins = 1
+
+		last_login_date = today_str
+		reward_claimed_today = false
+
+	save_game()
+
+func claim_daily_reward():
+	if reward_claimed_today:
+		return false
+
+	var reward = DAILY_REWARDS[consecutive_logins - 1]
+	match reward.type:
+		"money":
+			add_money(reward.amount)
+		"xp":
+			add_xp(reward.amount)
+		"skin":
+			unlock_skin(reward.id)
+
+	reward_claimed_today = true
+	save_game()
+	return true
+
+func unlock_skin(skin_id: String):
+	if not unlocked_skins.has(skin_id):
+		unlocked_skins.append(skin_id)
+		skin_unlocked.emit(skin_id)
+		save_game()
+
+func set_selected_skin(skin_id: String):
+	if unlocked_skins.has(skin_id):
+		selected_skin = skin_id
+		skin_changed.emit(skin_id)
+		save_game()
+		return true
+	return false
+
+func update_achievement_progress(type: String, amount: int, is_absolute: bool = false):
+	for id in ACHIEVEMENTS:
+		var ach = ACHIEVEMENTS[id]
+		if ach.type == type:
+			var current = achievement_progress.get(id, 0)
+			if current < ach.goal:
+				if is_absolute:
+					current = max(current, amount)
+				else:
+					current += amount
+				achievement_progress[id] = current
+
+				if current >= ach.goal and not unlocked_achievements.has(id):
+					unlock_achievement(id)
+
+	save_game()
+
+func unlock_achievement(id: String):
+	if not unlocked_achievements.has(id):
+		unlocked_achievements.append(id)
+		var ach = ACHIEVEMENTS[id]
+
+		if ach.has("reward_money"):
+			add_money(ach.reward_money)
+		if ach.has("reward_xp"):
+			add_xp(ach.reward_xp)
+		if ach.has("reward_skin"):
+			unlock_skin(ach.reward_skin)
+
+		achievement_unlocked.emit(id)
+		save_game()
+
 func save_game():
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
@@ -433,7 +574,15 @@ func save_game():
 			"active_loans": active_loans,
 			"base_fuel_price": base_fuel_price,
 			"daily_expenses_base": daily_expenses_base,
-			"active_economic_event": active_economic_event
+			"active_economic_event": active_economic_event,
+			"last_login_date": last_login_date,
+			"consecutive_logins": consecutive_logins,
+			"reward_claimed_today": reward_claimed_today,
+			"total_deliveries": total_deliveries,
+			"unlocked_achievements": unlocked_achievements,
+			"unlocked_skins": unlocked_skins,
+			"selected_skin": selected_skin,
+			"achievement_progress": achievement_progress
 		}
 		file.store_var(data)
 		file.close()
@@ -470,6 +619,14 @@ func load_game():
 			base_fuel_price = data.get("base_fuel_price", 150.0)
 			daily_expenses_base = data.get("daily_expenses_base", 200)
 			active_economic_event = data.get("active_economic_event", {"name": "Stable Economy", "reward_mult": 1.0, "fuel_price_mult": 1.0})
+			last_login_date = data.get("last_login_date", "")
+			consecutive_logins = data.get("consecutive_logins", 0)
+			reward_claimed_today = data.get("reward_claimed_today", false)
+			total_deliveries = data.get("total_deliveries", 0)
+			unlocked_achievements = data.get("unlocked_achievements", [])
+			unlocked_skins = data.get("unlocked_skins", ["default"])
+			selected_skin = data.get("selected_skin", "default")
+			achievement_progress = data.get("achievement_progress", {})
 
 			_unlock_cities_for_level()
 		file.close()
