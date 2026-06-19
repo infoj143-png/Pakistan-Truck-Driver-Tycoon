@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5t8m6k2f7u8e"]
+
+[ext_resource type="Script" path="res://scripts/MainMenu.gd" id="1_x8q2r"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x8q2r")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Truck Tycoon"
+horizontal_alignment = 1
+
+[node name="Mission" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Missions"
+
+[node name="Garage" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Garage"
+
+[node name="Profile" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Profile"
+
+[node name="Settings" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Settings"
+
+[node name="Quit" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="VBoxContainer/Mission" to="." method="_on_mission_pressed"]
+[connection signal="pressed" from="VBoxContainer/Garage" to="." method="_on_garage_pressed"]
+[connection signal="pressed" from="VBoxContainer/Profile" to="." method="_on_profile_pressed"]
+[connection signal="pressed" from="VBoxContainer/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]
