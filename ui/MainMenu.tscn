@@ -48,6 +48,10 @@ text = "Garage"
 layout_mode = 2
 text = "Profile"
 
+[node name="Company" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Company"
+
 [node name="Settings" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Settings"
@@ -60,5 +64,6 @@ text = "Quit"
 [connection signal="pressed" from="VBoxContainer/CitySelection" to="." method="_on_city_selection_pressed"]
 [connection signal="pressed" from="VBoxContainer/Garage" to="." method="_on_garage_pressed"]
 [connection signal="pressed" from="VBoxContainer/Profile" to="." method="_on_profile_pressed"]
+[connection signal="pressed" from="VBoxContainer/Company" to="." method="_on_company_pressed"]
 [connection signal="pressed" from="VBoxContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]
