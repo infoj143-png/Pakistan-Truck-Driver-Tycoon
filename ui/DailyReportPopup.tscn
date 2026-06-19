@@ -1,0 +1,78 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1x6q4y7j8k2d"]
+
+[ext_resource type="Script" path="res://scripts/DailyReportPopup.gd" id="1_r8q2r"]
+
+[node name="DailyReportPopup" type="ColorRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+script = ExtResource("1_r8q2r")
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="Title" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Daily Profit Report"
+horizontal_alignment = 1
+
+[node name="Details" type="VBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="Income" type="Label" parent="Panel/VBoxContainer/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Gross Income: Rs. 0"
+
+[node name="Salaries" type="Label" parent="Panel/VBoxContainer/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Salaries Paid: Rs. 0"
+
+[node name="Reputation" type="Label" parent="Panel/VBoxContainer/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Reputation Change: 0"
+
+[node name="NetProfit" type="Label" parent="Panel/VBoxContainer/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Net Profit: Rs. 0"
+
+[node name="Close" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Close"
+
+[connection signal="pressed" from="Panel/VBoxContainer/Close" to="." method="_on_close_pressed"]

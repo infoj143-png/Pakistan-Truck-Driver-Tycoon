@@ -8,6 +8,18 @@ var xp: int = 0
 var level: int = 1
 var fuel: float = 100.0
 
+# Company Stats
+var hired_drivers: Dictionary = {} # id -> {name, level, xp, salary, skills: {efficiency, speed, reliability}, assigned_truck}
+var driver_pool: Array = []
+var company_reputation: int = 50
+var daily_profit_history: Array = []
+var game_day_timer: float = 120.0
+
+const BASE_PASSIVE_INCOME = 500
+const HIRING_COST = 1000
+const DRIVER_SALARY_BASE = 200
+const PAKISTANI_NAMES = ["Ahmed", "Khan", "Iqbal", "Ali", "Malik", "Zubair", "Bilal", "Hassan", "Umer", "Farooq"]
+
 # Truck Data
 const TRUCK_DATA = {
 	"bedford_rocket": {
@@ -82,9 +94,18 @@ var unlocked_cities: Array = ["Lahore"]
 
 signal stats_changed
 signal mission_completed(reward_money, reward_xp)
+signal daily_report_generated(report_data)
 
 func _ready():
 	load_game()
+	if driver_pool.is_empty():
+		generate_driver_pool()
+
+func _process(delta):
+	game_day_timer -= delta
+	if game_day_timer <= 0:
+		process_daily_income()
+		game_day_timer = 120.0
 
 func add_money(amount: int):
 	money += amount
@@ -175,6 +196,119 @@ func _unlock_cities_for_level():
 				unlocked_cities.append(city_name)
 				print("Unlocked City: ", city_name)
 
+# Company Management Functions
+func generate_driver_pool():
+	driver_pool.clear()
+	for i in range(3):
+		var driver = {
+			"id": str(Time.get_unix_time_from_system()) + "_" + str(i),
+			"name": PAKISTANI_NAMES[randi() % PAKISTANI_NAMES.size()],
+			"level": 1,
+			"xp": 0,
+			"salary": DRIVER_SALARY_BASE + (randi() % 50),
+			"skills": {
+				"efficiency": 0.8 + (randf() * 0.4),
+				"speed": 0.8 + (randf() * 0.4),
+				"reliability": 0.8 + (randf() * 0.4)
+			},
+			"assigned_truck": ""
+		}
+		driver_pool.append(driver)
+	save_game()
+
+func hire_driver(pool_index: int):
+	if pool_index < 0 or pool_index >= driver_pool.size():
+		return false
+
+	if money >= HIRING_COST:
+		money -= HIRING_COST
+		var driver = driver_pool[pool_index]
+		hired_drivers[driver.id] = driver
+		driver_pool.remove_at(pool_index)
+
+		# Refill pool if empty
+		if driver_pool.is_empty():
+			generate_driver_pool()
+
+		stats_changed.emit()
+		save_game()
+		return true
+	return false
+
+func fire_driver(driver_id: String):
+	if hired_drivers.has(driver_id):
+		hired_drivers.erase(driver_id)
+		stats_changed.emit()
+		save_game()
+		return true
+	return false
+
+func assign_driver_to_truck(driver_id: String, truck_id: String):
+	if not hired_drivers.has(driver_id):
+		return false
+
+	# If truck_id is empty, unassign
+	if truck_id == "":
+		hired_drivers[driver_id].assigned_truck = ""
+		save_game()
+		return true
+
+	if not owned_trucks.has(truck_id):
+		return false
+
+	# Ensure no other driver is assigned to this truck
+	for id in hired_drivers:
+		if hired_drivers[id].assigned_truck == truck_id:
+			hired_drivers[id].assigned_truck = ""
+
+	hired_drivers[driver_id].assigned_truck = truck_id
+	save_game()
+	return true
+
+func process_daily_income():
+	var total_income = 0
+	var total_salaries = 0
+	var daily_rep_change = 0
+
+	for driver_id in hired_drivers:
+		var driver = hired_drivers[driver_id]
+		total_salaries += driver.salary
+
+		if driver.assigned_truck != "":
+			var truck_stats = get_truck_stats(driver.assigned_truck)
+			if truck_stats:
+				var income = int(BASE_PASSIVE_INCOME * driver.skills.efficiency * truck_stats.cargo)
+				total_income += income
+
+				# Reliability check - random chance to lose reputation or income if unreliable
+				if randf() > driver.skills.reliability:
+					daily_rep_change -= 1
+				else:
+					daily_rep_change += 1
+		else:
+			# Unassigned drivers still take salary but don't earn much, and reputation might drop
+			daily_rep_change -= 1
+
+	var net_profit = total_income - total_salaries
+	money += net_profit
+	company_reputation = clampi(company_reputation + daily_rep_change, 0, 100)
+
+	var report = {
+		"date": Time.get_datetime_dict_from_system(),
+		"income": total_income,
+		"salaries": total_salaries,
+		"net_profit": net_profit,
+		"rep_change": daily_rep_change
+	}
+
+	daily_profit_history.append(report)
+	if daily_profit_history.size() > 30:
+		daily_profit_history.remove_at(0)
+
+	daily_report_generated.emit(report)
+	stats_changed.emit()
+	save_game()
+
 func save_game():
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
@@ -186,7 +320,11 @@ func save_game():
 			"current_city": current_city,
 			"unlocked_cities": unlocked_cities,
 			"owned_trucks": owned_trucks,
-			"selected_truck": selected_truck
+			"selected_truck": selected_truck,
+			"hired_drivers": hired_drivers,
+			"driver_pool": driver_pool,
+			"company_reputation": company_reputation,
+			"daily_profit_history": daily_profit_history
 		}
 		file.store_var(data)
 		file.close()
@@ -209,6 +347,10 @@ func load_game():
 				"bedford_rocket": {"speed": 0, "fuel": 0, "cargo": 0, "durability": 0}
 			})
 			selected_truck = data.get("selected_truck", "bedford_rocket")
+			hired_drivers = data.get("hired_drivers", {})
+			driver_pool = data.get("driver_pool", [])
+			company_reputation = data.get("company_reputation", 50)
+			daily_profit_history = data.get("daily_profit_history", [])
 			_unlock_cities_for_level()
 		file.close()
 		stats_changed.emit()
