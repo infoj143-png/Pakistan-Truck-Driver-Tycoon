@@ -6,8 +6,10 @@ const SAVE_PATH = "user://save_game.dat"
 var money: int = 1000
 var xp: int = 0
 var level: int = 1
+var fuel: float = 100.0
 
 signal stats_changed
+signal mission_completed(reward_money, reward_xp)
 
 func _ready():
 	load_game()
@@ -23,6 +25,11 @@ func add_xp(amount: int):
 	stats_changed.emit()
 	save_game()
 
+func complete_mission(reward_money: int, reward_xp: int):
+	add_money(reward_money)
+	add_xp(reward_xp)
+	mission_completed.emit(reward_money, reward_xp)
+
 func _check_level_up():
 	var xp_needed = level * 100 # Simple level up logic
 	while xp >= xp_needed:
@@ -37,7 +44,8 @@ func save_game():
 		var data = {
 			"money": money,
 			"xp": xp,
-			"level": level
+			"level": level,
+			"fuel": fuel
 		}
 		file.store_var(data)
 		file.close()
@@ -53,5 +61,6 @@ func load_game():
 			money = data.get("money", 1000)
 			xp = data.get("xp", 0)
 			level = data.get("level", 1)
+			fuel = data.get("fuel", 100.0)
 		file.close()
 		stats_changed.emit()
