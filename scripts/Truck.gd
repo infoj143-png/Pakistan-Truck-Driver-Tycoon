@@ -49,10 +49,15 @@ func _physics_process(delta):
 	var direction = Vector2.UP.rotated(rotation)
 	if forward_input != 0:
 		var city_data = GameManager.cities[GameManager.current_city]
-		var fuel_mult = city_data.fuel_mult
+		var weather_effects = WeatherManager.WEATHER_EFFECTS[WeatherManager.current_weather]
 
-		var move_step = direction * forward_input * speed * delta
-		velocity = velocity.lerp(direction * forward_input * speed, acceleration * delta)
+		var fuel_mult = city_data.fuel_mult * weather_effects.fuel_mult
+		var current_speed = speed * weather_effects.acceleration_mult # Limit top speed/acceleration slightly
+		var current_accel = acceleration * weather_effects.acceleration_mult
+		var current_friction = friction * weather_effects.friction_mult
+
+		var move_step = direction * forward_input * current_speed * delta
+		velocity = velocity.lerp(direction * forward_input * current_speed, current_accel * delta)
 
 		# Track distance and decrease condition
 		var dist = move_step.length()
@@ -65,7 +70,8 @@ func _physics_process(delta):
 		# Consume fuel
 		consume_fuel(delta * 2.0 * fuel_mult)
 	else:
-		velocity = velocity.lerp(Vector2.ZERO, friction * delta)
+		var weather_effects = WeatherManager.WEATHER_EFFECTS[WeatherManager.current_weather]
+		velocity = velocity.lerp(Vector2.ZERO, friction * weather_effects.friction_mult * delta)
 
 	move_and_slide()
 

@@ -582,7 +582,9 @@ func save_game():
 			"unlocked_achievements": unlocked_achievements,
 			"unlocked_skins": unlocked_skins,
 			"selected_skin": selected_skin,
-			"achievement_progress": achievement_progress
+			"achievement_progress": achievement_progress,
+			"current_weather": WeatherManager.current_weather,
+			"current_time": WeatherManager.current_time
 		}
 		file.store_var(data)
 		file.close()
@@ -627,6 +629,10 @@ func load_game():
 			unlocked_skins = data.get("unlocked_skins", ["default"])
 			selected_skin = data.get("selected_skin", "default")
 			achievement_progress = data.get("achievement_progress", {})
+
+			if WeatherManager:
+				WeatherManager.current_weather = data.get("current_weather", WeatherManager.Weather.CLEAR)
+				WeatherManager.current_time = data.get("current_time", 8.0)
 
 			_unlock_cities_for_level()
 		file.close()
