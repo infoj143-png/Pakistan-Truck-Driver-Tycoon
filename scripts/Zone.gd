@@ -18,4 +18,7 @@ func _on_body_entered(body):
 			if body.cargo_loaded:
 				body.cargo_loaded = false
 				print("Cargo Delivered!")
-				GameManager.complete_mission(reward_money, reward_xp)
+				var city_data = GameManager.cities[GameManager.current_city]
+				var final_reward_money = int(reward_money * city_data.reward_mult)
+				var final_reward_xp = int(reward_xp * city_data.reward_mult)
+				GameManager.complete_mission(final_reward_money, final_reward_xp)

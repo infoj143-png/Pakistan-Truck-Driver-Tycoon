@@ -3,6 +3,9 @@ extends Control
 func _on_mission_pressed():
 	get_tree().change_scene_to_file("res://ui/Mission.tscn")
 
+func _on_city_selection_pressed():
+	get_tree().change_scene_to_file("res://ui/CitySelection.tscn")
+
 func _on_garage_pressed():
 	get_tree().change_scene_to_file("res://ui/Garage.tscn")
 
