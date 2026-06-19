@@ -84,6 +84,10 @@ text = "Fleet Management"
 layout_mode = 2
 text = "Daily Reports"
 
+[node name="Bank" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Bank & Loans"
+
 [node name="Back" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Back to Menu"
@@ -91,4 +95,5 @@ text = "Back to Menu"
 [connection signal="pressed" from="VBoxContainer/HiringHall" to="." method="_on_hiring_hall_pressed"]
 [connection signal="pressed" from="VBoxContainer/FleetManagement" to="." method="_on_fleet_management_pressed"]
 [connection signal="pressed" from="VBoxContainer/DailyReports" to="." method="_on_daily_reports_pressed"]
+[connection signal="pressed" from="VBoxContainer/Bank" to="." method="_on_bank_pressed"]
 [connection signal="pressed" from="VBoxContainer/Back" to="." method="_on_back_pressed"]

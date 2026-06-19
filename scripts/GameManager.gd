@@ -15,6 +15,12 @@ var company_reputation: int = 50
 var daily_profit_history: Array = []
 var game_day_timer: float = 120.0
 
+# Economy Stats
+var active_loans: Array = [] # {amount, remaining_installments, interest_rate}
+var base_fuel_price: float = 150.0
+var daily_expenses_base: int = 200
+var active_economic_event: Dictionary = {"name": "Stable Economy", "reward_mult": 1.0, "fuel_price_mult": 1.0}
+
 const BASE_PASSIVE_INCOME = 500
 const HIRING_COST = 1000
 const DRIVER_SALARY_BASE = 200
@@ -73,7 +79,7 @@ const TRUCK_DATA = {
 }
 
 var owned_trucks: Dictionary = {
-	"bedford_rocket": {"speed": 0, "fuel": 0, "cargo": 0, "durability": 0}
+	"bedford_rocket": {"speed": 0, "fuel": 0, "cargo": 0, "durability": 0, "condition": 100.0}
 }
 var selected_truck: String = "bedford_rocket"
 
@@ -130,7 +136,7 @@ func buy_truck(truck_id: String):
 	var price = TRUCK_DATA[truck_id].price
 	if money >= price and not owned_trucks.has(truck_id):
 		money -= price
-		owned_trucks[truck_id] = {"speed": 0, "fuel": 0, "cargo": 0, "durability": 0}
+		owned_trucks[truck_id] = {"speed": 0, "fuel": 0, "cargo": 0, "durability": 0, "condition": 100.0}
 		stats_changed.emit()
 		save_game()
 		return true
@@ -268,16 +274,28 @@ func assign_driver_to_truck(driver_id: String, truck_id: String):
 func process_daily_income():
 	var total_income = 0
 	var total_salaries = 0
+	var total_maintenance = 0
+	var total_loan_repayments = 0
 	var daily_rep_change = 0
 
+	# Economic event effects
+	var event_reward_mult = active_economic_event.get("reward_mult", 1.0)
+
+	# Drivers and Passive Income
 	for driver_id in hired_drivers:
 		var driver = hired_drivers[driver_id]
 		total_salaries += driver.salary
 
 		if driver.assigned_truck != "":
 			var truck_stats = get_truck_stats(driver.assigned_truck)
+			var truck_data = owned_trucks[driver.assigned_truck]
+
 			if truck_stats:
-				var income = int(BASE_PASSIVE_INCOME * driver.skills.efficiency * truck_stats.cargo)
+				# Maintenance cost based on condition
+				var maintenance = int((100.0 - truck_data.condition) * 2)
+				total_maintenance += maintenance
+
+				var income = int(BASE_PASSIVE_INCOME * driver.skills.efficiency * truck_stats.cargo * event_reward_mult)
 				total_income += income
 
 				# Reliability check - random chance to lose reputation or income if unreliable
@@ -289,7 +307,19 @@ func process_daily_income():
 			# Unassigned drivers still take salary but don't earn much, and reputation might drop
 			daily_rep_change -= 1
 
-	var net_profit = total_income - total_salaries
+	# Loan Repayments
+	var remaining_loans = []
+	for loan in active_loans:
+		var installment = int((loan.amount * (1.0 + loan.interest_rate)) / 10.0) # 10 installments
+		total_loan_repayments += installment
+		loan.remaining_installments -= 1
+		if loan.remaining_installments > 0:
+			remaining_loans.append(loan)
+	active_loans = remaining_loans
+
+	var total_expenses = total_salaries + total_maintenance + total_loan_repayments + daily_expenses_base
+	var net_profit = total_income - total_expenses
+
 	money += net_profit
 	company_reputation = clampi(company_reputation + daily_rep_change, 0, 100)
 
@@ -297,17 +327,92 @@ func process_daily_income():
 		"date": Time.get_datetime_dict_from_system(),
 		"income": total_income,
 		"salaries": total_salaries,
+		"maintenance": total_maintenance,
+		"loans": total_loan_repayments,
+		"expenses": total_expenses,
 		"net_profit": net_profit,
-		"rep_change": daily_rep_change
+		"rep_change": daily_rep_change,
+		"event": active_economic_event.name
 	}
 
 	daily_profit_history.append(report)
 	if daily_profit_history.size() > 30:
 		daily_profit_history.remove_at(0)
 
+	# Trigger new economic event for the next day
+	trigger_economic_event()
+
 	daily_report_generated.emit(report)
 	stats_changed.emit()
 	save_game()
+
+func trigger_economic_event():
+	var events = [
+		{"name": "Stable Economy", "reward_mult": 1.0, "fuel_price_mult": 1.0},
+		{"name": "Economic Boom", "reward_mult": 1.5, "fuel_price_mult": 1.2},
+		{"name": "Fuel Crisis", "reward_mult": 0.8, "fuel_price_mult": 2.5},
+		{"name": "Logistics Strike", "reward_mult": 0.5, "fuel_price_mult": 0.9},
+		{"name": "Tech Breakthrough", "reward_mult": 1.2, "fuel_price_mult": 0.7}
+	]
+
+	active_economic_event = events[randi() % events.size()]
+	base_fuel_price = 150.0 * active_economic_event.fuel_price_mult
+	print("New Economic Event: ", active_economic_event.name)
+
+func take_loan(amount: int):
+	var interest_rate = 0.1 # 10% interest
+	if amount > 10000: interest_rate = 0.15
+
+	var loan = {
+		"amount": amount,
+		"remaining_installments": 10,
+		"interest_rate": interest_rate
+	}
+	active_loans.append(loan)
+	money += amount
+	stats_changed.emit()
+	save_game()
+
+func repay_loan(index: int):
+	if index < 0 or index >= active_loans.size():
+		return false
+
+	var loan = active_loans[index]
+	var remaining_total = int(loan.amount * (1.0 + loan.interest_rate) * (loan.remaining_installments / 10.0))
+
+	if money >= remaining_total:
+		money -= remaining_total
+		active_loans.remove_at(index)
+		stats_changed.emit()
+		save_game()
+		return true
+	return false
+
+func repair_truck(truck_id: String):
+	if not owned_trucks.has(truck_id):
+		return false
+
+	var condition = owned_trucks[truck_id].condition
+	var repair_cost = int((100.0 - condition) * 50) # Rs 50 per 1% damage
+
+	if money >= repair_cost:
+		money -= repair_cost
+		owned_trucks[truck_id].condition = 100.0
+		stats_changed.emit()
+		save_game()
+		return true
+	return false
+
+func refill_fuel_cost(amount: float):
+	var city_mult = cities[current_city].fuel_mult
+	var total_cost = int(amount * base_fuel_price * city_mult)
+
+	if money >= total_cost:
+		money -= total_cost
+		stats_changed.emit()
+		save_game()
+		return true
+	return false
 
 func save_game():
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -324,7 +429,11 @@ func save_game():
 			"hired_drivers": hired_drivers,
 			"driver_pool": driver_pool,
 			"company_reputation": company_reputation,
-			"daily_profit_history": daily_profit_history
+			"daily_profit_history": daily_profit_history,
+			"active_loans": active_loans,
+			"base_fuel_price": base_fuel_price,
+			"daily_expenses_base": daily_expenses_base,
+			"active_economic_event": active_economic_event
 		}
 		file.store_var(data)
 		file.close()
@@ -344,13 +453,24 @@ func load_game():
 			current_city = data.get("current_city", "Lahore")
 			unlocked_cities = data.get("unlocked_cities", ["Lahore"])
 			owned_trucks = data.get("owned_trucks", {
-				"bedford_rocket": {"speed": 0, "fuel": 0, "cargo": 0, "durability": 0}
+				"bedford_rocket": {"speed": 0, "fuel": 0, "cargo": 0, "durability": 0, "condition": 100.0}
 			})
+
+			# Ensure all owned trucks have condition
+			for t_id in owned_trucks:
+				if not owned_trucks[t_id].has("condition"):
+					owned_trucks[t_id]["condition"] = 100.0
+
 			selected_truck = data.get("selected_truck", "bedford_rocket")
 			hired_drivers = data.get("hired_drivers", {})
 			driver_pool = data.get("driver_pool", [])
 			company_reputation = data.get("company_reputation", 50)
 			daily_profit_history = data.get("daily_profit_history", [])
+			active_loans = data.get("active_loans", [])
+			base_fuel_price = data.get("base_fuel_price", 150.0)
+			daily_expenses_base = data.get("daily_expenses_base", 200)
+			active_economic_event = data.get("active_economic_event", {"name": "Stable Economy", "reward_mult": 1.0, "fuel_price_mult": 1.0})
+
 			_unlock_cities_for_level()
 		file.close()
 		stats_changed.emit()

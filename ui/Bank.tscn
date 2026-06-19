@@ -1,0 +1,100 @@
+[gd_scene load_steps=2 format=3 uid="uid://bank_scene_uid"]
+
+[ext_resource type="Script" path="res://scripts/Bank.gd" id="1_bank"]
+
+[node name="Bank" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bank")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.1, 0.05, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 50.0
+offset_right = -50.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Habib Bank - Truck Financing"
+horizontal_alignment = 1
+
+[node name="BalanceLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Balance: Rs. 1000"
+horizontal_alignment = 1
+
+[node name="LoanOffers" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="VBoxContainer/LoanOffers"]
+layout_mode = 2
+text = "Available Loan Offers"
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="VBoxContainer/LoanOffers"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="Loan5k" type="Button" parent="VBoxContainer/LoanOffers/HBox"]
+layout_mode = 2
+text = "Rs. 5,000 (10% Int)"
+
+[node name="Loan10k" type="Button" parent="VBoxContainer/LoanOffers/HBox"]
+layout_mode = 2
+text = "Rs. 10,000 (10% Int)"
+
+[node name="Loan50k" type="Button" parent="VBoxContainer/LoanOffers/HBox"]
+layout_mode = 2
+text = "Rs. 50,000 (15% Int)"
+
+[node name="ActiveLoansSection" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="VBoxContainer/ActiveLoansSection"]
+layout_mode = 2
+text = "Active Loans"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/ActiveLoansSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ActiveLoansList" type="VBoxContainer" parent="VBoxContainer/ActiveLoansSection/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Back" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Back to Dashboard"
+
+[connection signal="pressed" from="VBoxContainer/LoanOffers/HBox/Loan5k" to="." method="_on_take_loan_pressed" binds= [5000]]
+[connection signal="pressed" from="VBoxContainer/LoanOffers/HBox/Loan10k" to="." method="_on_take_loan_pressed" binds= [10000]]
+[connection signal="pressed" from="VBoxContainer/LoanOffers/HBox/Loan50k" to="." method="_on_take_loan_pressed" binds= [50000]]
+[connection signal="pressed" from="VBoxContainer/Back" to="." method="_on_back_pressed"]

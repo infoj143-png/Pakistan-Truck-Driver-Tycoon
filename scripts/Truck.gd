@@ -9,6 +9,7 @@ extends CharacterBody2D
 var fuel = 100.0
 
 var cargo_loaded = false
+var odometer = 0.0
 
 func _ready():
 	var stats = GameManager.get_truck_stats(GameManager.selected_truck)
@@ -43,7 +44,17 @@ func _physics_process(delta):
 		var city_data = GameManager.cities[GameManager.current_city]
 		var fuel_mult = city_data.fuel_mult
 
+		var move_step = direction * forward_input * speed * delta
 		velocity = velocity.lerp(direction * forward_input * speed, acceleration * delta)
+
+		# Track distance and decrease condition
+		var dist = move_step.length()
+		odometer += dist
+		if GameManager.owned_trucks.has(GameManager.selected_truck):
+			GameManager.owned_trucks[GameManager.selected_truck].condition -= dist * 0.0001
+			if GameManager.owned_trucks[GameManager.selected_truck].condition < 0:
+				GameManager.owned_trucks[GameManager.selected_truck].condition = 0
+
 		# Consume fuel
 		consume_fuel(delta * 2.0 * fuel_mult)
 	else:
@@ -59,6 +70,13 @@ func consume_fuel(amount):
 	GameManager.stats_changed.emit()
 
 func refill_fuel():
-	fuel = max_fuel
-	GameManager.fuel = fuel
-	GameManager.stats_changed.emit()
+	var needed = max_fuel - fuel
+	if needed <= 0: return
+
+	if GameManager.refill_fuel_cost(needed):
+		fuel = max_fuel
+		GameManager.fuel = fuel
+		GameManager.stats_changed.emit()
+		print("Fuel refilled for Rs. ", int(needed * GameManager.base_fuel_price * GameManager.cities[GameManager.current_city].fuel_mult))
+	else:
+		print("Not enough money to refill fuel!")

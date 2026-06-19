@@ -29,6 +29,9 @@ var truck_id: String
 @onready var upgrade_cargo_btn = %UpgradeCargoBtn
 @onready var upgrade_durability_btn = %UpgradeDurabilityBtn
 
+@onready var condition_label = Label.new()
+@onready var repair_button = Button.new()
+
 func setup(_truck_id: String):
 	self.truck_id = _truck_id
 	update_ui()
@@ -53,6 +56,20 @@ func update_ui():
 		select_button.show()
 		select_button.disabled = selected
 		select_button.text = "SELECTED" if selected else "SELECT"
+
+		# Condition and Repair
+		var condition = GameManager.owned_trucks[truck_id].get("condition", 100.0)
+		condition_label.text = "Condition: " + str(int(condition)) + "%"
+		if not condition_label.get_parent():
+			get_node("VBoxContainer").add_child(condition_label)
+
+		var repair_cost = int((100.0 - condition) * 50)
+		repair_button.text = "Repair (Rs. " + str(repair_cost) + ")"
+		repair_button.visible = condition < 100.0
+		repair_button.disabled = GameManager.money < repair_cost
+		if not repair_button.get_parent():
+			repair_button.pressed.connect(_on_repair_pressed)
+			get_node("VBoxContainer").add_child(repair_button)
 
 		# Update bars and upgrade buttons
 		_update_stat_row(speed_bar, upgrade_speed_btn, "speed", upgrades.speed, data.upgrade_costs.speed)
@@ -104,3 +121,7 @@ func _on_upgrade_cargo_btn_pressed():
 
 func _on_upgrade_durability_btn_pressed():
 	upgrade_pressed.emit(truck_id, "durability")
+
+func _on_repair_pressed():
+	if GameManager.repair_truck(truck_id):
+		update_ui()
