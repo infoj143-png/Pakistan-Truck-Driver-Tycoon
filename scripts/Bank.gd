@@ -32,12 +32,15 @@ func update_ui():
 		active_loans_list.add_child(hbox)
 
 func _on_take_loan_pressed(amount: int):
+	AudioManager.play_ui_click()
 	GameManager.take_loan(amount)
 	print("Took loan: ", amount)
 
 func _on_repay_loan_pressed(index: int):
+	AudioManager.play_ui_click()
 	if GameManager.repay_loan(index):
 		print("Repaid loan at index: ", index)
 
 func _on_back_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/CompanyDashboard.tscn")

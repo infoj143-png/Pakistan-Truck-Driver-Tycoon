@@ -11,6 +11,16 @@ func _ready():
 	# Initial update
 	_update_visuals()
 
+	if AudioManager:
+		AudioManager.start_city_ambience()
+		if WeatherManager.current_weather == WeatherManager.Weather.RAIN:
+			AudioManager.start_rain_sound()
+
+func _exit_tree():
+	if AudioManager:
+		AudioManager.stop_city_ambience()
+		AudioManager.stop_rain_sound()
+
 func _process(_delta):
 	# Smoothly update lighting every frame
 	day_night_cycle.color = WeatherManager.get_ambient_color()

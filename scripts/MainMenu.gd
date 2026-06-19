@@ -6,27 +6,35 @@ func _ready():
 		_on_daily_rewards_pressed()
 
 func _on_mission_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/Mission.tscn")
 
 func _on_city_selection_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/CitySelection.tscn")
 
 func _on_garage_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/Garage.tscn")
 
 func _on_profile_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/Profile.tscn")
 
 func _on_daily_rewards_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/DailyRewards.tscn")
 
 func _on_achievements_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/Achievements.tscn")
 
 func _on_company_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/CompanyDashboard.tscn")
 
 func _on_settings_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/Settings.tscn")
 
 func _on_quit_pressed():

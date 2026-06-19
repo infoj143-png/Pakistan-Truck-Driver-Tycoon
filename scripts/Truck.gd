@@ -11,6 +11,9 @@ var fuel = 100.0
 var cargo_loaded = false
 var odometer = 0.0
 
+var engine_sound: AudioStreamPlayer2D
+var horn_sound: AudioStreamPlayer2D
+
 func _ready():
 	var stats = GameManager.get_truck_stats(GameManager.selected_truck)
 	if stats:
@@ -27,6 +30,21 @@ func _ready():
 	GameManager.skin_changed.connect(apply_skin)
 
 	add_to_group("truck")
+	setup_audio()
+
+func setup_audio():
+	engine_sound = AudioStreamPlayer2D.new()
+	engine_sound.bus = "SFX"
+	# engine_sound.stream = load("res://assets/audio/engine_loop.wav")
+	# engine_sound.autoplay = true
+	# engine_sound.loop = true
+	add_child(engine_sound)
+	# engine_sound.play()
+
+	horn_sound = AudioStreamPlayer2D.new()
+	horn_sound.bus = "Horn"
+	# horn_sound.stream = load("res://assets/audio/truck_horn.wav")
+	add_child(horn_sound)
 
 func apply_skin(skin_id: String):
 	if GameManager.SKINS.has(skin_id):
@@ -74,6 +92,22 @@ func _physics_process(delta):
 		velocity = velocity.lerp(Vector2.ZERO, friction * weather_effects.friction_mult * delta)
 
 	move_and_slide()
+	update_audio_pitch(delta)
+
+	if Input.is_action_just_pressed("horn"): # Need to make sure 'horn' action exists or use a default
+		play_horn()
+	elif Input.is_key_pressed(KEY_H): # Fallback to H key
+		play_horn()
+
+func update_audio_pitch(delta):
+	if engine_sound:
+		var speed_percent = velocity.length() / speed
+		engine_sound.pitch_scale = lerp(1.0, 2.0, speed_percent)
+
+func play_horn():
+	if horn_sound and not horn_sound.playing:
+		# horn_sound.play()
+		print("Truck Horn!")
 
 func consume_fuel(amount):
 	fuel -= amount

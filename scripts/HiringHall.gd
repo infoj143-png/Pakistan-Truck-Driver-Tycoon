@@ -43,10 +43,12 @@ func update_ui():
 		driver_list.add_child(container)
 
 func _on_hire_pressed(index):
+	AudioManager.play_ui_click()
 	if GameManager.hire_driver(index):
 		print("Hired driver!")
 	else:
 		print("Not enough money!")
 
 func _on_back_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/CompanyDashboard.tscn")

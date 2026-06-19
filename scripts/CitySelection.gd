@@ -30,6 +30,7 @@ func update_city_buttons():
 			button.pressed.connect(_on_city_pressed.bind(city_name))
 
 func _on_city_pressed(city_name: String):
+	AudioManager.play_ui_click()
 	selected_city = city_name
 	update_info_panel()
 	# Highlight selected city
@@ -60,6 +61,7 @@ func update_info_panel():
 		travel_button.text = "Travel to " + selected_city
 
 func _on_travel_pressed():
+	AudioManager.play_ui_click()
 	if selected_city in GameManager.unlocked_cities:
 		GameManager.current_city = selected_city
 		GameManager.save_game()
@@ -68,4 +70,5 @@ func _on_travel_pressed():
 		print("Traveled to ", selected_city)
 
 func _on_back_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")

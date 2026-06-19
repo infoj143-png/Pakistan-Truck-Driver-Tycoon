@@ -26,16 +26,20 @@ func update_ui():
 		card.upgrade_pressed.connect(_on_truck_upgrade_pressed)
 
 func _on_truck_buy_pressed(truck_id):
+	AudioManager.play_ui_click()
 	if GameManager.buy_truck(truck_id):
 		print("Bought truck: ", truck_id)
 
 func _on_truck_select_pressed(truck_id):
+	AudioManager.play_ui_click()
 	if GameManager.select_truck(truck_id):
 		print("Selected truck: ", truck_id)
 
 func _on_truck_upgrade_pressed(truck_id, stat_id):
+	AudioManager.play_ui_click()
 	if GameManager.upgrade_truck(truck_id, stat_id):
 		print("Upgraded ", stat_id, " for ", truck_id)
 
 func _on_back_pressed():
+	AudioManager.play_ui_click()
 	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
