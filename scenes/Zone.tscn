@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3r5m1v4p2q6n"]
+
+[ext_resource type="Script" path="res://scripts/Zone.gd" id="1_z2s3m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_z1"]
+size = Vector2(200, 200)
+
+[node name="Zone" type="Area2D"]
+script = ExtResource("1_z2s3m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_z1")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+color = Color(0, 1, 0, 0.3)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

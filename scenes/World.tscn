@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://c1w2e3r4t5y6u"]
+
+[ext_resource type="PackedScene" uid="uid://b8k7w2m3n5p1q" path="res://scenes/Truck.tscn" id="1_truck"]
+[ext_resource type="PackedScene" uid="uid://d3r5m1v4p2q6n" path="res://scenes/Zone.tscn" id="2_zone"]
+[ext_resource type="PackedScene" uid="uid://d2p1s3r4n5m6q" path="res://ui/HUD.tscn" id="3_hud"]
+[ext_resource type="PackedScene" uid="uid://b5m6n7p8q9r0s" path="res://ui/MissionCompletePopup.tscn" id="4_popup"]
+
+[node name="World" type="Node2D"]
+
+[node name="Truck" parent="." groups=["truck"] instance=ExtResource("1_truck")]
+position = Vector2(640, 360)
+
+[node name="PickupZone" parent="." instance=ExtResource("2_zone")]
+position = Vector2(200, 360)
+
+[node name="Label" type="Label" parent="PickupZone"]
+offset_left = -50.0
+offset_top = -120.0
+offset_right = 50.0
+offset_bottom = -97.0
+text = "PICKUP"
+horizontal_alignment = 1
+
+[node name="DeliveryZone" parent="." instance=ExtResource("2_zone")]
+position = Vector2(1000, 360)
+zone_type = 1
+
+[node name="ColorRect" parent="DeliveryZone" index="1"]
+color = Color(1, 0, 0, 0.3)
+
+[node name="Label" type="Label" parent="DeliveryZone"]
+offset_left = -50.0
+offset_top = -120.0
+offset_right = 50.0
+offset_bottom = -97.0
+text = "DELIVERY"
+horizontal_alignment = 1
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="MissionCompletePopup" parent="." instance=ExtResource("4_popup")]
+visible = false
+
+[editable path="DeliveryZone"]

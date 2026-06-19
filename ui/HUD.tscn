@@ -1,0 +1,87 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2p1s3r4n5m6q"]
+
+[ext_resource type="Script" path="res://scripts/HUD.gd" id="1_h2u3d"]
+[ext_resource type="Texture2D" uid="uid://cr07dgv4x707m" path="res://icon.svg" id="2_i4svg"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_h2u3d")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="MoneyLabel" type="Label" parent="Control/HBoxContainer"]
+layout_mode = 2
+text = "Money: $0"
+
+[node name="XPLabel" type="Label" parent="Control/HBoxContainer"]
+layout_mode = 2
+text = "XP: 0"
+
+[node name="FuelContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -220.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 60.0
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="Control/FuelContainer"]
+layout_mode = 2
+text = "Fuel"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="Control/FuelContainer"]
+layout_mode = 2
+value = 100.0
+
+[node name="TouchControls" type="Control" parent="Control"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -200.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Left" type="TouchScreenButton" parent="Control/TouchControls"]
+position = Vector2(50, 50)
+scale = Vector2(0.5, 0.5)
+texture_normal = ExtResource("2_i4svg")
+action = "ui_left"
+
+[node name="Right" type="TouchScreenButton" parent="Control/TouchControls"]
+position = Vector2(150, 50)
+scale = Vector2(0.5, 0.5)
+texture_normal = ExtResource("2_i4svg")
+action = "ui_right"
+
+[node name="Up" type="TouchScreenButton" parent="Control/TouchControls"]
+position = Vector2(1050, 20)
+scale = Vector2(0.5, 0.5)
+texture_normal = ExtResource("2_i4svg")
+action = "ui_up"
+
+[node name="Down" type="TouchScreenButton" parent="Control/TouchControls"]
+position = Vector2(1050, 100)
+scale = Vector2(0.5, 0.5)
+texture_normal = ExtResource("2_i4svg")
+action = "ui_down"
