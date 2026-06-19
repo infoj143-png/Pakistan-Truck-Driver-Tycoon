@@ -30,9 +30,12 @@ func _physics_process(delta):
 
 	var direction = Vector2.UP.rotated(rotation)
 	if forward_input != 0:
+		var city_data = GameManager.cities[GameManager.current_city]
+		var fuel_mult = city_data.fuel_mult
+
 		velocity = velocity.lerp(direction * forward_input * speed, acceleration * delta)
 		# Consume fuel
-		consume_fuel(delta * 2.0)
+		consume_fuel(delta * 2.0 * fuel_mult)
 	else:
 		velocity = velocity.lerp(Vector2.ZERO, friction * delta)
 

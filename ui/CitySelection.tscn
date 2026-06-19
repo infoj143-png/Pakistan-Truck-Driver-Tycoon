@@ -1,0 +1,181 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1v2c3d4e5f6g"]
+
+[ext_resource type="Script" path="res://scripts/CitySelection.gd" id="1_city_selection"]
+
+[node name="CitySelection" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_city_selection")
+
+[node name="Background" type="ColorRect" editor_description="Background" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.15, 0.12, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 20.0
+offset_right = 150.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "PAKISTAN CITIES"
+horizontal_alignment = 1
+
+[node name="MapContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -250.0
+offset_right = 300.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MapPlaceholder" type="ColorRect" parent="MapContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.3, 0.2, 1)
+
+[node name="Cities" type="Control" parent="MapContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Lahore" type="Button" parent="MapContainer/Cities"]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 280.0
+offset_right = 500.0
+offset_bottom = 311.0
+text = "Lahore"
+
+[node name="Karachi" type="Button" parent="MapContainer/Cities"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 430.0
+offset_right = 230.0
+offset_bottom = 461.0
+text = "Karachi"
+
+[node name="Islamabad" type="Button" parent="MapContainer/Cities"]
+layout_mode = 0
+offset_left = 400.0
+offset_top = 150.0
+offset_right = 500.0
+offset_bottom = 181.0
+text = "Islamabad"
+
+[node name="Multan" type="Button" parent="MapContainer/Cities"]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 320.0
+offset_right = 400.0
+offset_bottom = 351.0
+text = "Multan"
+
+[node name="Faisalabad" type="Button" parent="MapContainer/Cities"]
+layout_mode = 0
+offset_left = 380.0
+offset_top = 230.0
+offset_right = 480.0
+offset_bottom = 261.0
+text = "Faisalabad"
+
+[node name="Peshawar" type="Button" parent="MapContainer/Cities"]
+layout_mode = 0
+offset_left = 340.0
+offset_top = 120.0
+offset_right = 430.0
+offset_bottom = 151.0
+text = "Peshawar"
+
+[node name="Quetta" type="Button" parent="MapContainer/Cities"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 280.0
+offset_right = 200.0
+offset_bottom = 311.0
+text = "Quetta"
+
+[node name="Hunza" type="Button" parent="MapContainer/Cities"]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 40.0
+offset_right = 530.0
+offset_bottom = 71.0
+text = "Hunza"
+
+[node name="InfoPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -150.0
+offset_right = -20.0
+offset_bottom = 150.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InfoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="CityInfo" type="Label" parent="InfoPanel/VBoxContainer"]
+layout_mode = 2
+text = "Select a city to see details."
+autowrap_mode = 2
+
+[node name="TravelButton" type="Button" parent="InfoPanel/VBoxContainer"]
+layout_mode = 2
+text = "Travel"
+
+[node name="Back" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_vertical = 0
+text = "Back"
+
+[connection signal="pressed" from="InfoPanel/VBoxContainer/TravelButton" to="." method="_on_travel_pressed"]
+[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
