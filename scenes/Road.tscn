@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://df7j1k2m3n4p5"]
+
+[node name="Road" type="StaticBody2D"]
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 1000, 0)
+width = 120.0
+default_color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="Markings" type="Line2D" parent="Line2D"]
+points = PackedVector2Array(0, 0, 1000, 0)
+width = 4.0
+default_color = Color(1, 1, 1, 0.5)
+texture_mode = 2
+
+[node name="LeftBoundary" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(0, -60, 1000, -60, 1000, -70, 0, -70)
+
+[node name="RightBoundary" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(0, 60, 1000, 60, 1000, 70, 0, 70)
+
+[node name="VisualBoundaryLeft" type="ColorRect" parent="."]
+offset_top = -65.0
+offset_right = 1000.0
+offset_bottom = -60.0
+color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="VisualBoundaryRight" type="ColorRect" parent="."]
+offset_top = 60.0
+offset_right = 1000.0
+offset_bottom = 65.0
+color = Color(0.4, 0.4, 0.4, 1)

@@ -1,9 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://d3r5m1v4p2q6n"]
+[gd_scene load_steps=5 format=3 uid="uid://d3r5m1v4p2q6n"]
 
 [ext_resource type="Script" path="res://scripts/Zone.gd" id="1_z2s3m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_z1"]
 size = Vector2(200, 200)
+
+[sub_resource type="Curve" id="Curve_p1"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_g1"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
 [node name="Zone" type="Area2D"]
 script = ExtResource("1_z2s3m")
@@ -11,11 +18,36 @@ script = ExtResource("1_z2s3m")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_z1")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="GroundRect" type="ColorRect" parent="Visuals"]
 offset_left = -100.0
 offset_top = -100.0
 offset_right = 100.0
 offset_bottom = 100.0
-color = Color(0, 1, 0, 0.3)
+color = Color(0, 1, 0, 0.2)
+
+[node name="Marker" type="Polygon2D" parent="Visuals"]
+position = Vector2(0, -50)
+color = Color(1, 1, 0, 0.8)
+polygon = PackedVector2Array(-20, 0, 20, 0, 0, 40)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 30
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.8
+emission_shape = 3
+emission_rect_extents = Vector2(100, 100)
+direction = Vector2(0, -1)
+spread = 45.0
+gravity = Vector2(0, -100)
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+scale_amount_min = 5.0
+scale_amount_max = 10.0
+scale_amount_curve = SubResource("Curve_p1")
+color_ramp = SubResource("Gradient_g1")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

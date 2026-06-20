@@ -1,20 +1,43 @@
-[gd_scene load_steps=6 format=3 uid="uid://c1w2e3r4t5y6u"]
-
-[ext_resource type="PackedScene" uid="uid://b8k7w2m3n5p1q" path="res://scenes/Truck.tscn" id="1_truck"]
-[ext_resource type="PackedScene" uid="uid://d3r5m1v4p2q6n" path="res://scenes/Zone.tscn" id="2_zone"]
-[ext_resource type="PackedScene" uid="uid://d2p1s3r4n5m6q" path="res://ui/HUD.tscn" id="3_hud"]
-[ext_resource type="PackedScene" uid="uid://b5m6n7p8q9r0s" path="res://ui/MissionCompletePopup.tscn" id="4_popup"]
+[gd_scene load_steps=7 format=3 uid="uid://c1w2e3r4t5y6u"]
 
 [ext_resource type="Script" path="res://scripts/World.gd" id="1_world"]
+[ext_resource type="PackedScene" uid="uid://b8k7w2m3n5p1q" path="res://scenes/Truck.tscn" id="2_truck"]
+[ext_resource type="PackedScene" uid="uid://df7j1k2m3n4p5" path="res://scenes/Road.tscn" id="3_road"]
+[ext_resource type="PackedScene" uid="uid://d3r5m1v4p2q6n" path="res://scenes/Zone.tscn" id="4_zone"]
+[ext_resource type="PackedScene" uid="uid://d2p1s3r4n5m6q" path="res://ui/HUD.tscn" id="5_hud"]
+[ext_resource type="PackedScene" uid="uid://b5m6n7p8q9r0s" path="res://ui/MissionCompletePopup.tscn" id="6_popup"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_world")
 
-[node name="Truck" parent="." groups=["truck"] instance=ExtResource("1_truck")]
-position = Vector2(640, 360)
+[node name="Environment" type="Node2D" parent="."]
 
-[node name="PickupZone" parent="." instance=ExtResource("2_zone")]
+[node name="Grass" type="ColorRect" parent="Environment"]
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 4000.0
+offset_bottom = 4000.0
+color = Color(0.133333, 0.270588, 0.133333, 1)
+
+[node name="Roads" type="Node2D" parent="."]
+
+[node name="MainRoad" parent="Roads" instance=ExtResource("3_road")]
+position = Vector2(0, 360)
+
+[node name="RoadToPickup" parent="Roads" instance=ExtResource("3_road")]
 position = Vector2(200, 360)
+rotation = 1.5708
+
+[node name="RoadToDelivery" parent="Roads" instance=ExtResource("3_road")]
+position = Vector2(1000, 360)
+rotation = 1.5708
+
+[node name="Truck" parent="." groups=["truck"] instance=ExtResource("2_truck")]
+position = Vector2(100, 360)
+rotation = 1.5708
+
+[node name="PickupZone" parent="." instance=ExtResource("4_zone")]
+position = Vector2(200, 700)
 
 [node name="Label" type="Label" parent="PickupZone"]
 offset_left = -50.0
@@ -24,12 +47,9 @@ offset_bottom = -97.0
 text = "PICKUP"
 horizontal_alignment = 1
 
-[node name="DeliveryZone" parent="." instance=ExtResource("2_zone")]
-position = Vector2(1000, 360)
+[node name="DeliveryZone" parent="." instance=ExtResource("4_zone")]
+position = Vector2(1000, 700)
 zone_type = 1
-
-[node name="ColorRect" parent="DeliveryZone" index="1"]
-color = Color(1, 0, 0, 0.3)
 
 [node name="Label" type="Label" parent="DeliveryZone"]
 offset_left = -50.0
@@ -64,9 +84,7 @@ offset_right = 1280.0
 offset_bottom = 720.0
 color = Color(0.7, 0.7, 0.7, 0)
 
-[node name="HUD" parent="." instance=ExtResource("3_hud")]
+[node name="HUD" parent="." instance=ExtResource("5_hud")]
 
-[node name="MissionCompletePopup" parent="." instance=ExtResource("4_popup")]
+[node name="MissionCompletePopup" parent="." instance=ExtResource("6_popup")]
 visible = false
-
-[editable path="DeliveryZone"]

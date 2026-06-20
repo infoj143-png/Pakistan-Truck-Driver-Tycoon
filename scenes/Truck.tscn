@@ -1,19 +1,106 @@
-[gd_scene load_steps=4 format=3 uid="uid://b8k7w2m3n5p1q"]
+[gd_scene load_steps=3 format=3 uid="uid://b8k7w2m3n5p1q"]
 
 [ext_resource type="Script" path="res://scripts/Truck.gd" id="1_t2m3n"]
-[ext_resource type="Texture2D" uid="uid://cr07dgv4x707m" path="res://icon.svg" id="2_i4svg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_t1"]
-size = Vector2(120, 120)
+size = Vector2(80, 160)
 
 [node name="Truck" type="CharacterBody2D"]
 script = ExtResource("1_t2m3n")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_i4svg")
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Body" type="ColorRect" parent="Visuals"]
+offset_left = -40.0
+offset_top = -80.0
+offset_right = 40.0
+offset_bottom = 80.0
+color = Color(0.12, 0.12, 0.12, 1)
+
+[node name="Cabin" type="ColorRect" parent="Visuals"]
+offset_left = -35.0
+offset_top = -75.0
+offset_right = 35.0
+offset_bottom = -20.0
+color = Color(0.2, 0.4, 0.8, 1)
+
+[node name="Windshield" type="ColorRect" parent="Visuals/Cabin"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 15.0
+color = Color(0.6, 0.8, 1, 1)
+
+[node name="CargoBed" type="ColorRect" parent="Visuals"]
+offset_left = -40.0
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 80.0
+color = Color(0.6, 0.3, 0.1, 1)
+
+[node name="TruckArt" type="Node2D" parent="Visuals"]
+
+[node name="Decoration1" type="Polygon2D" parent="Visuals/TruckArt"]
+color = Color(1, 0.8, 0, 1)
+polygon = PackedVector2Array(-40, -20, 40, -20, 30, -10, -30, -10)
+
+[node name="Decoration2" type="Polygon2D" parent="Visuals/TruckArt"]
+color = Color(1, 0, 0.4, 1)
+polygon = PackedVector2Array(-40, 80, 40, 80, 30, 70, -30, 70)
+
+[node name="Wheels" type="Node2D" parent="Visuals"]
+
+[node name="WheelFL" type="ColorRect" parent="Visuals/Wheels"]
+offset_left = -45.0
+offset_top = -60.0
+offset_right = -35.0
+offset_bottom = -30.0
+color = Color(0, 0, 0, 1)
+
+[node name="WheelFR" type="ColorRect" parent="Visuals/Wheels"]
+offset_left = 35.0
+offset_top = -60.0
+offset_right = 45.0
+offset_bottom = -30.0
+color = Color(0, 0, 0, 1)
+
+[node name="WheelRL" type="ColorRect" parent="Visuals/Wheels"]
+offset_left = -45.0
+offset_top = 40.0
+offset_right = -35.0
+offset_bottom = 70.0
+color = Color(0, 0, 0, 1)
+
+[node name="WheelRR" type="ColorRect" parent="Visuals/Wheels"]
+offset_left = 35.0
+offset_top = 40.0
+offset_right = 45.0
+offset_bottom = 70.0
+color = Color(0, 0, 0, 1)
+
+[node name="Headlights" type="Node2D" parent="Visuals"]
+
+[node name="LeftLight" type="PointLight2D" parent="Visuals/Headlights"]
+position = Vector2(-25, -80)
+enabled = false
+color = Color(1, 1, 0.8, 1)
+energy = 1.5
+shadow_enabled = true
+texture_scale = 2.0
+
+[node name="RightLight" type="PointLight2D" parent="Visuals/Headlights"]
+position = Vector2(25, -80)
+enabled = false
+color = Color(1, 1, 0.8, 1)
+energy = 1.5
+shadow_enabled = true
+texture_scale = 2.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_t1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.5, 0.5)
+zoom = Vector2(0.8, 0.8)
+position_smoothing_enabled = true
+position_smoothing_speed = 5.0
