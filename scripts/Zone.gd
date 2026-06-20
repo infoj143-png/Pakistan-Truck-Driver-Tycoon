@@ -7,8 +7,17 @@ enum ZoneType { PICKUP, DELIVERY }
 
 signal truck_entered_zone(type)
 
+var time = 0.0
+
 func _ready():
 	add_to_group("zones")
+	if zone_type == ZoneType.DELIVERY:
+		$Visuals/GroundRect.color = Color(1, 0, 0, 0.2)
+		$Visuals/Marker.color = Color(1, 0.5, 0, 0.8)
+
+func _process(delta):
+	time += delta
+	$Visuals/Marker.position.y = -50 + sin(time * 5.0) * 20.0
 
 func _on_body_entered(body):
 	if body is Truck:
@@ -16,10 +25,12 @@ func _on_body_entered(body):
 		if zone_type == ZoneType.PICKUP:
 			if not body.cargo_loaded:
 				body.cargo_loaded = true
+				$CPUParticles2D.emitting = true
 				print("Cargo Picked Up!")
 		elif zone_type == ZoneType.DELIVERY:
 			if body.cargo_loaded:
 				body.cargo_loaded = false
+				$CPUParticles2D.emitting = true
 				print("Cargo Delivered!")
 
 				var truck_stats = GameManager.get_truck_stats(GameManager.selected_truck)

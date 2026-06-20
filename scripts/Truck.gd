@@ -1,10 +1,11 @@
 extends CharacterBody2D
 class_name Truck
 
-@export var speed = 300.0
-@export var acceleration = 5.0
-@export var friction = 2.0
-@export var rotation_speed = 3.0
+@export var speed = 400.0
+@export var acceleration = 150.0
+@export var friction = 1.0
+@export var steering_limit = 0.6
+@export var wheel_base = 70.0
 
 @export var max_fuel = 100.0
 var fuel = 100.0
@@ -58,61 +59,79 @@ func setup_audio():
 
 func apply_skin(skin_id: String):
 	if GameManager.SKINS.has(skin_id):
-		$Sprite2D.self_modulate = GameManager.SKINS[skin_id]["color"]
+		var color = GameManager.SKINS[skin_id]["color"]
+		if has_node("Visuals/Cabin"):
+			$Visuals/Cabin.color = color
+
+var steering_angle = 0.0
 
 func _physics_process(delta):
+	update_headlights()
 	if fuel <= 0:
-		velocity = velocity.lerp(Vector2.ZERO, friction * delta)
+		velocity = velocity.move_toward(Vector2.ZERO, friction * 100 * delta)
 		move_and_slide()
 		return
 
-	# ui_up is -1, ui_down is 1. We want 1 to be forward (up)
 	var forward_input = -Input.get_axis("ui_up", "ui_down")
 	var turn_input = Input.get_axis("ui_left", "ui_right")
 
-	# Rotate based on turn input and movement direction
-	if forward_input != 0:
-		rotation += turn_input * rotation_speed * delta * (1.0 if forward_input > 0 else -1.0)
+	# Calculate Steering
+	steering_angle = turn_input * steering_limit
 
-	var direction = Vector2.UP.rotated(rotation)
+	var weather_effects = WeatherManager.WEATHER_EFFECTS[WeatherManager.current_weather]
+	var current_accel = acceleration * weather_effects["acceleration_mult"]
+	var current_speed = speed * weather_effects["acceleration_mult"]
+	var current_friction = friction * weather_effects["friction_mult"]
+
 	if forward_input != 0:
+		# Use -transform.y because the truck visuals face UP
+		velocity = velocity.move_toward(-transform.y * forward_input * current_speed, current_accel * delta)
+
+		# Consume fuel
 		var city_data = GameManager.cities[GameManager.current_city]
-		var weather_effects = WeatherManager.WEATHER_EFFECTS[WeatherManager.current_weather]
-
 		var fuel_mult = city_data["fuel_mult"] * weather_effects["fuel_mult"]
-		var current_speed = speed * weather_effects["acceleration_mult"] # Limit top speed/acceleration slightly
-		var current_accel = acceleration * weather_effects["acceleration_mult"]
-		var current_friction = friction * weather_effects["friction_mult"]
+		consume_fuel(delta * 2.0 * fuel_mult)
 
-		var move_step = direction * forward_input * current_speed * delta
-		velocity = velocity.lerp(direction * forward_input * current_speed, current_accel * delta)
-
-		# Track distance and decrease condition
-		var dist = move_step.length()
+		# Track distance
+		var dist = velocity.length() * delta
 		odometer += dist
 		if GameManager.owned_trucks.has(GameManager.selected_truck):
 			GameManager.owned_trucks[GameManager.selected_truck]["condition"] -= dist * 0.0001
-			if GameManager.owned_trucks[GameManager.selected_truck]["condition"] < 0:
-				GameManager.owned_trucks[GameManager.selected_truck]["condition"] = 0
-
-		# Consume fuel
-		consume_fuel(delta * 2.0 * fuel_mult)
 	else:
-		var weather_effects = WeatherManager.WEATHER_EFFECTS[WeatherManager.current_weather]
-		velocity = velocity.lerp(Vector2.ZERO, friction * weather_effects["friction_mult"] * delta)
+		velocity = velocity.move_toward(Vector2.ZERO, current_friction * 200 * delta)
+
+	# Apply Steering (Bicycle Model)
+	# For visuals facing UP (-Y):
+	var rear_wheel = position + transform.y * wheel_base / 2.0
+	var front_wheel = position - transform.y * wheel_base / 2.0
+	rear_wheel += velocity * delta
+	front_wheel += velocity.rotated(steering_angle) * delta
+	var new_dir = (front_wheel - rear_wheel).normalized()
+
+	if velocity.length() > 5.0:
+		var travel_dir = velocity.normalized()
+		if travel_dir.dot(-transform.y) > 0: # Moving forward
+			rotation = new_dir.angle() + PI/2.0
+		else: # Moving backward
+			rotation = new_dir.angle() - PI/2.0
 
 	move_and_slide()
 	update_audio_pitch(delta)
 
-	if Input.is_action_just_pressed("horn"): # Need to make sure 'horn' action exists or use a default
-		play_horn()
-	elif Input.is_key_pressed(KEY_H): # Fallback to H key
+	if Input.is_action_just_pressed("horn") or Input.is_key_pressed(KEY_H):
 		play_horn()
 
 func update_audio_pitch(delta):
 	if engine_sound:
 		var speed_percent = velocity.length() / speed
 		engine_sound.pitch_scale = lerp(1.0, 2.0, speed_percent)
+
+func update_headlights():
+	var is_night = WeatherManager.get_hour() >= 19 or WeatherManager.get_hour() <= 5
+	if has_node("Visuals/Headlights"):
+		for light in $Visuals/Headlights.get_children():
+			if light is PointLight2D:
+				light.enabled = is_night
 
 func play_horn():
 	if horn_sound and horn_sound.stream and not horn_sound.playing:

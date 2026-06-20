@@ -33,6 +33,7 @@ func _ready():
 	if toggle_map_btn:
 		toggle_map_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["orange"], GameManager.TRUCK_ART_COLORS["white"], 2))
 
+	setup_touch_visuals()
 	update_ui()
 	_update_weather_ui()
 
@@ -62,6 +63,35 @@ func _on_weather_changed(_new_weather):
 func _update_weather_ui():
 	if weather_label:
 		weather_label.text = "Weather: " + WeatherManager.get_weather_name()
+
+func setup_touch_visuals():
+	var left_btn = $Control/TouchControls/Steering/Left
+	var right_btn = $Control/TouchControls/Steering/Right
+	var up_btn = $Control/TouchControls/Pedals/Up
+	var down_btn = $Control/TouchControls/Pedals/Down
+
+	# Create simple textures for touch buttons since icon.svg might be missing or ugly
+	var tex = PlaceholderTexture2D.new()
+	tex.size = Vector2(64, 64)
+
+	left_btn.texture_normal = tex
+	right_btn.texture_normal = tex
+	up_btn.texture_normal = tex
+	down_btn.texture_normal = tex
+
+	# Add labels for clarity
+	_add_label_to_button(left_btn, "L")
+	_add_label_to_button(right_btn, "R")
+	_add_label_to_button(up_btn, "GO")
+	_add_label_to_button(down_btn, "STOP")
+
+func _add_label_to_button(btn, text):
+	var label = Label.new()
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.custom_minimum_size = Vector2(64, 64)
+	btn.add_child(label)
 
 func _on_toggle_map_button_pressed():
 	AudioManager.play_ui_click()

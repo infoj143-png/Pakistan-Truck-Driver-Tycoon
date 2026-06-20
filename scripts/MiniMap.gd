@@ -61,3 +61,8 @@ func _process(_delta):
 	# Update arrow
 	var angle = truck.position.angle_to_point(target_pos)
 	arrow.rotation = angle + PI/2 # Adjust based on arrow texture orientation
+
+	if not GameManager.cargo_loaded:
+		arrow.modulate = Color.GREEN
+	else:
+		arrow.modulate = Color.RED

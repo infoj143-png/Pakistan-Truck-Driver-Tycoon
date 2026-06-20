@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://d2p1s3r4n5m6q"]
+[gd_scene load_steps=4 format=3 uid="uid://d2p1s3r4n5m6q"]
 
 [ext_resource type="Script" path="res://scripts/HUD.gd" id="1_h2u3d"]
 [ext_resource type="Texture2D" uid="uid://cr07dgv4x707m" path="res://icon.svg" id="2_i4svg"]
@@ -143,30 +143,55 @@ offset_top = -250.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="Left" type="TouchScreenButton" parent="Control/TouchControls"]
-position = Vector2(50, 50)
-scale = Vector2(1.2, 1.2)
+[node name="Steering" type="Control" parent="Control/TouchControls"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 50.0
+offset_top = -100.0
+offset_right = 350.0
+offset_bottom = 100.0
+grow_vertical = 2
+
+[node name="Left" type="TouchScreenButton" parent="Control/TouchControls/Steering"]
+position = Vector2(0, 50)
+scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("2_i4svg")
 action = "ui_left"
 visibility_mode = 1
 
-[node name="Right" type="TouchScreenButton" parent="Control/TouchControls"]
-position = Vector2(250, 50)
-scale = Vector2(1.2, 1.2)
+[node name="Right" type="TouchScreenButton" parent="Control/TouchControls/Steering"]
+position = Vector2(150, 50)
+scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("2_i4svg")
 action = "ui_right"
 visibility_mode = 1
 
-[node name="Up" type="TouchScreenButton" parent="Control/TouchControls"]
-position = Vector2(1050, -20)
-scale = Vector2(1.2, 1.2)
+[node name="Pedals" type="Control" parent="Control/TouchControls"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -100.0
+offset_right = -50.0
+offset_bottom = 100.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Up" type="TouchScreenButton" parent="Control/TouchControls/Pedals"]
+position = Vector2(150, 0)
+scale = Vector2(1.5, 2.0)
 texture_normal = ExtResource("2_i4svg")
 action = "ui_up"
 visibility_mode = 1
 
-[node name="Down" type="TouchScreenButton" parent="Control/TouchControls"]
-position = Vector2(1050, 130)
-scale = Vector2(1.2, 1.2)
+[node name="Down" type="TouchScreenButton" parent="Control/TouchControls/Pedals"]
+position = Vector2(0, 50)
+scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("2_i4svg")
 action = "ui_down"
 visibility_mode = 1
