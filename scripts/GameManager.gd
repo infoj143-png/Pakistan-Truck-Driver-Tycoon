@@ -155,6 +155,7 @@ const TRUCK_ART_COLORS = {
 	"green": Color("#06d6a0"),
 	"orange": Color("#fb8500"),
 	"pink": Color("#ff006e"),
+	"white": Color.WHITE,
 	"dark_bg": Color("#121212")
 }
 
