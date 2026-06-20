@@ -17,6 +17,7 @@ var cargo_loaded: bool:
 		GameManager.cargo_loaded = value
 
 var odometer = 0.0
+var is_near_fuel_station = false
 
 var engine_sound: AudioStreamPlayer2D
 var horn_sound: AudioStreamPlayer2D
@@ -138,6 +139,9 @@ func play_horn():
 		horn_sound.play()
 	else:
 		print("Truck Horn! (SFX missing)")
+
+func set_near_fuel_station(value: bool):
+	is_near_fuel_station = value
 
 func consume_fuel(amount):
 	fuel -= amount

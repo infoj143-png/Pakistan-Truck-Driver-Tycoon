@@ -10,6 +10,7 @@ var truck_id: String
 @onready var price_label = %PriceLabel
 @onready var buy_button = %BuyButton
 @onready var select_button = %SelectButton
+@onready var icon_rect = %IconRect
 
 # Stat labels
 @onready var speed_val = %SpeedValue
@@ -34,6 +35,17 @@ var truck_id: String
 
 func setup(_truck_id: String):
 	self.truck_id = _truck_id
+	self.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["dark_bg"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+
+	# Initial style for buttons
+	icon_rect.color = GameManager.TRUCK_ART_COLORS["dark_bg"]
+	buy_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["green"], GameManager.TRUCK_ART_COLORS["white"], 2))
+	select_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["blue"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+	upgrade_speed_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["orange"], GameManager.TRUCK_ART_COLORS["white"], 1))
+	upgrade_fuel_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["orange"], GameManager.TRUCK_ART_COLORS["white"], 1))
+	upgrade_cargo_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["orange"], GameManager.TRUCK_ART_COLORS["white"], 1))
+	upgrade_durability_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["orange"], GameManager.TRUCK_ART_COLORS["white"], 1))
+
 	update_ui()
 
 func update_ui():
@@ -68,6 +80,7 @@ func update_ui():
 		repair_button.visible = condition < 100.0
 		repair_button.disabled = GameManager.money < repair_cost
 		if not repair_button.get_parent():
+			repair_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["red"], GameManager.TRUCK_ART_COLORS["white"], 2))
 			repair_button.pressed.connect(_on_repair_pressed)
 			get_node("VBoxContainer").add_child(repair_button)
 

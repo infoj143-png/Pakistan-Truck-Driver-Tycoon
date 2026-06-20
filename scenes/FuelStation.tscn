@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=3 uid="uid://d1f2u3s4t5a6n"]
+
+[ext_resource type="Script" path="res://scripts/FuelStation.gd" id="1_f1u2e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f1"]
+size = Vector2(250, 250)
+
+[node name="FuelStation" type="Area2D"]
+script = ExtResource("1_f1u2e")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_f1")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="GroundRect" type="ColorRect" parent="Visuals"]
+offset_left = -120.0
+offset_top = -120.0
+offset_right = 120.0
+offset_bottom = 120.0
+color = Color(0.1, 0.3, 0.1, 0.3)
+
+[node name="PumpBase" type="Polygon2D" parent="Visuals"]
+color = Color(0.901961, 0.223529, 0.27451, 1)
+polygon = PackedVector2Array(-40, 60, 40, 60, 40, -40, -40, -40)
+
+[node name="PumpDisplay" type="ColorRect" parent="Visuals"]
+offset_left = -30.0
+offset_top = -30.0
+offset_right = 30.0
+offset_bottom = 0.0
+color = Color(0.1, 0.1, 0.1, 1)
+
+[node name="DisplayLine" type="ColorRect" parent="Visuals/PumpDisplay"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 55.0
+offset_bottom = 10.0
+color = Color(0.2, 1, 0.2, 1)
+
+[node name="PumpTop" type="Polygon2D" parent="Visuals"]
+color = Color(1, 0.717647, 0, 1)
+polygon = PackedVector2Array(-45, -40, 45, -40, 30, -60, -30, -60)
+
+[node name="Hose" type="Line2D" parent="Visuals"]
+points = PackedVector2Array(40, -20, 60, -10, 60, 40, 40, 50)
+width = 6.0
+default_color = Color(0.1, 0.1, 0.1, 1)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -50.0
+offset_top = -80.0
+offset_right = 50.0
+offset_bottom = -57.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "FUEL"
+horizontal_alignment = 1
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

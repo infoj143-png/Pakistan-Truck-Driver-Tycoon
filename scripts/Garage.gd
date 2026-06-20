@@ -60,6 +60,10 @@ func update_skin_list():
 		var unlocked = GameManager.unlocked_skins.has(skin_id)
 
 		btn.text = skin_data["name"]
+		btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["blue"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+		btn.add_theme_stylebox_override("hover", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["orange"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+		btn.add_theme_stylebox_override("disabled", GameManager.get_truck_art_stylebox(Color(0.3, 0.3, 0.3), Color(0.5, 0.5, 0.5), 2))
+
 		if not unlocked:
 			btn.text += " (LOCKED)"
 			btn.disabled = true
