@@ -8,6 +8,7 @@ var xp: int = 0
 var level: int = 1
 var fuel: float = 100.0
 var cargo_loaded: bool = false
+var first_time_menu: bool = true
 
 # Company Stats
 var hired_drivers: Dictionary = {} # id -> {name, level, xp, salary, skills: {efficiency, speed, reliability}, assigned_truck}
@@ -158,16 +159,21 @@ const TRUCK_ART_COLORS = {
 }
 
 func goto_scene(path: String):
+	print("[GameManager] Navigating to scene: ", path)
 	# Save game before transitioning to ensure all state (like fuel/condition) is persisted
 	save_game()
 
 	var loading_screen = load("res://ui/Loading.tscn").instantiate()
+	# Set mouse filter to ignore so it doesn't block inputs during transition
+	loading_screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	get_tree().root.add_child(loading_screen)
 
 	# Wait a bit to show the loading screen
 	await get_tree().create_timer(1.0).timeout
 
-	get_tree().change_scene_to_file(path)
+	var result = get_tree().change_scene_to_file(path)
+	if result != OK:
+		print("[GameManager] Error changing scene: ", result)
 
 	# Wait for the next scene to be ready before removing loading screen
 	await get_tree().process_frame
