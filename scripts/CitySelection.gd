@@ -10,9 +10,9 @@ extends Control
 var selected_city: String = ""
 
 func _ready():
-	background.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.dark_bg, GameManager.TRUCK_ART_COLORS.green))
-	info_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.blue, GameManager.TRUCK_ART_COLORS.yellow, 2))
-	back_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.red, GameManager.TRUCK_ART_COLORS.white, 2))
+	background.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["dark_bg"], GameManager.TRUCK_ART_COLORS["green"]))
+	info_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["blue"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+	back_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["red"], GameManager.TRUCK_ART_COLORS["white"], 2))
 
 	selected_city = GameManager.current_city
 	update_city_buttons()
@@ -53,13 +53,13 @@ func _on_city_pressed(city_name: String):
 
 func update_info_panel():
 	var data = GameManager.cities[selected_city]
-	var status = "UNLOCKED" if selected_city in GameManager.unlocked_cities else "LOCKED (Level " + str(data.unlock_level) + ")"
+	var status = "UNLOCKED" if selected_city in GameManager.unlocked_cities else "LOCKED (Level " + str(data["unlock_level"]) + ")"
 
 	info_label.text = "City: " + selected_city + "\n" + \
 					 "Status: " + status + "\n" + \
-					 "Reward Multiplier: x" + str(data.reward_mult) + "\n" + \
-					 "Fuel Consumption: x" + str(data.fuel_mult) + "\n" + \
-					 "Difficulty: " + str(data.difficulty)
+					 "Reward Multiplier: x" + str(data["reward_mult"]) + "\n" + \
+					 "Fuel Consumption: x" + str(data["fuel_mult"]) + "\n" + \
+					 "Difficulty: " + str(data["difficulty"])
 
 	travel_button.disabled = selected_city == GameManager.current_city or not (selected_city in GameManager.unlocked_cities)
 	if selected_city == GameManager.current_city:

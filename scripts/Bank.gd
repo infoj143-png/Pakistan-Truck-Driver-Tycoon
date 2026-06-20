@@ -19,8 +19,8 @@ func update_ui():
 		var loan = GameManager.active_loans[i]
 		var hbox = HBoxContainer.new()
 		var info = Label.new()
-		var remaining_total = int(loan.amount * (1.0 + loan.interest_rate) * (loan.remaining_installments / 10.0))
-		info.text = "Loan: Rs. " + str(loan.amount) + " (" + str(loan.remaining_installments) + " left) - Total: Rs. " + str(remaining_total)
+		var remaining_total = int(loan["amount"] * (1.0 + loan["interest_rate"]) * (loan["remaining_installments"] / 10.0))
+		info.text = "Loan: Rs. " + str(loan["amount"]) + " (" + str(loan["remaining_installments"]) + " left) - Total: Rs. " + str(remaining_total)
 		hbox.add_child(info)
 
 		var repay_btn = Button.new()

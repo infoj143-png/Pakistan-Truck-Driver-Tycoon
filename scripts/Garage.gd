@@ -10,8 +10,8 @@ extends Control
 var truck_card_scene = preload("res://ui/TruckCard.tscn")
 
 func _ready():
-	skin_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.blue, GameManager.TRUCK_ART_COLORS.yellow, 2))
-	back_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.red, GameManager.TRUCK_ART_COLORS.white, 2))
+	skin_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["blue"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+	back_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["red"], GameManager.TRUCK_ART_COLORS["white"], 2))
 
 	GameManager.stats_changed.connect(update_ui)
 	GameManager.skin_changed.connect(_on_skin_changed)
@@ -48,7 +48,7 @@ func _on_truck_select_pressed(truck_id):
 
 func _update_preview():
 	if truck_preview:
-		truck_preview.self_modulate = GameManager.SKINS[GameManager.selected_skin].color
+		truck_preview.self_modulate = GameManager.SKINS[GameManager.selected_skin]["color"]
 
 func update_skin_list():
 	for child in skin_list.get_children():
@@ -59,7 +59,7 @@ func update_skin_list():
 		var skin_data = GameManager.SKINS[skin_id]
 		var unlocked = GameManager.unlocked_skins.has(skin_id)
 
-		btn.text = skin_data.name
+		btn.text = skin_data["name"]
 		if not unlocked:
 			btn.text += " (LOCKED)"
 			btn.disabled = true

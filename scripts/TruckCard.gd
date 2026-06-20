@@ -43,12 +43,12 @@ func update_ui():
 	var stats = GameManager.get_truck_stats(truck_id)
 	var upgrades = GameManager.owned_trucks.get(truck_id, {"speed": 0, "fuel": 0, "cargo": 0, "durability": 0})
 
-	name_label.text = data.name
+	name_label.text = data["name"]
 
-	speed_val.text = str(int(stats.speed))
-	fuel_val.text = str(int(stats.fuel))
-	cargo_val.text = str(stats.cargo) + "x"
-	durability_val.text = str(int(stats.durability))
+	speed_val.text = str(int(stats["speed"]))
+	fuel_val.text = str(int(stats["fuel"]))
+	cargo_val.text = str(stats["cargo"]) + "x"
+	durability_val.text = str(int(stats["durability"]))
 
 	if owned:
 		price_label.text = "OWNED"
@@ -72,12 +72,12 @@ func update_ui():
 			get_node("VBoxContainer").add_child(repair_button)
 
 		# Update bars and upgrade buttons
-		_update_stat_row(speed_bar, upgrade_speed_btn, "speed", upgrades.speed, data.upgrade_costs.speed)
-		_update_stat_row(fuel_bar, upgrade_fuel_btn, "fuel", upgrades.fuel, data.upgrade_costs.fuel)
-		_update_stat_row(cargo_bar, upgrade_cargo_btn, "cargo", upgrades.cargo, data.upgrade_costs.cargo)
-		_update_stat_row(durability_bar, upgrade_durability_btn, "durability", upgrades.durability, data.upgrade_costs.durability)
+		_update_stat_row(speed_bar, upgrade_speed_btn, "speed", upgrades["speed"], data["upgrade_costs"]["speed"])
+		_update_stat_row(fuel_bar, upgrade_fuel_btn, "fuel", upgrades["fuel"], data["upgrade_costs"]["fuel"])
+		_update_stat_row(cargo_bar, upgrade_cargo_btn, "cargo", upgrades["cargo"], data["upgrade_costs"]["cargo"])
+		_update_stat_row(durability_bar, upgrade_durability_btn, "durability", upgrades["durability"], data["upgrade_costs"]["durability"])
 	else:
-		price_label.text = "Rs. " + str(data.price)
+		price_label.text = "Rs. " + str(data["price"])
 		buy_button.show()
 		select_button.hide()
 
