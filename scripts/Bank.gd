@@ -43,4 +43,4 @@ func _on_repay_loan_pressed(index: int):
 
 func _on_back_pressed():
 	AudioManager.play_ui_click()
-	get_tree().change_scene_to_file("res://ui/CompanyDashboard.tscn")
+	GameManager.goto_scene("res://ui/CompanyDashboard.tscn")

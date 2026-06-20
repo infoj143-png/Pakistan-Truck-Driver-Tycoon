@@ -142,6 +142,49 @@ const SKINS = {
 	"platinum_fleet": {"name": "Platinum Fleet", "color": Color.SLATE_GRAY}
 }
 
+# UI Styling Constants
+const TRUCK_ART_COLORS = {
+	"red": Color("#e63946"),
+	"yellow": Color("#ffb703"),
+	"blue": Color("#1d3557"),
+	"green": Color("#06d6a0"),
+	"orange": Color("#fb8500"),
+	"pink": Color("#ff006e"),
+	"dark_bg": Color("#121212")
+}
+
+func goto_scene(path: String):
+	var current_scene = get_tree().current_scene
+	var loading_screen = load("res://ui/Loading.tscn").instantiate()
+	get_tree().root.add_child(loading_screen)
+
+	# Wait a bit to show the loading screen
+	await get_tree().create_timer(1.0).timeout
+
+	get_tree().change_scene_to_file(path)
+
+	# Wait for the next scene to be ready before removing loading screen
+	await get_tree().process_frame
+	loading_screen.queue_free()
+
+func get_truck_art_stylebox(bg_color: Color = TRUCK_ART_COLORS.blue, border_color: Color = TRUCK_ART_COLORS.yellow, border_width: int = 4):
+	var sb = StyleBoxFlat.new()
+	sb.bg_color = bg_color
+	sb.border_width_left = border_width
+	sb.border_width_top = border_width
+	sb.border_width_right = border_width
+	sb.border_width_bottom = border_width
+	sb.border_color = border_color
+	sb.corner_radius_top_left = 10
+	sb.corner_radius_top_right = 10
+	sb.corner_radius_bottom_right = 10
+	sb.corner_radius_bottom_left = 10
+	sb.expand_margin_left = 2
+	sb.expand_margin_top = 2
+	sb.expand_margin_right = 2
+	sb.expand_margin_bottom = 2
+	return sb
+
 func _ready():
 	load_game()
 	check_daily_login()

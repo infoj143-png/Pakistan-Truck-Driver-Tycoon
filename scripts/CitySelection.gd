@@ -3,10 +3,17 @@ extends Control
 @onready var city_buttons = $MapContainer/Cities
 @onready var info_label = $InfoPanel/VBoxContainer/CityInfo
 @onready var travel_button = $InfoPanel/VBoxContainer/TravelButton
+@onready var background = %Background
+@onready var info_panel = %InfoPanel
+@onready var back_button = $Back
 
 var selected_city: String = ""
 
 func _ready():
+	background.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.dark_bg, GameManager.TRUCK_ART_COLORS.green))
+	info_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.blue, GameManager.TRUCK_ART_COLORS.yellow, 2))
+	back_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.red, GameManager.TRUCK_ART_COLORS.white, 2))
+
 	selected_city = GameManager.current_city
 	update_city_buttons()
 	update_info_panel()
@@ -71,4 +78,4 @@ func _on_travel_pressed():
 
 func _on_back_pressed():
 	AudioManager.play_ui_click()
-	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+	GameManager.goto_scene("res://ui/MainMenu.tscn")

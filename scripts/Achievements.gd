@@ -1,8 +1,12 @@
 extends Control
 
 @onready var achievement_list = $VBoxContainer/ScrollContainer/AchievementList
+@onready var background = %Background
+@onready var back_button = $VBoxContainer/BackButton
 
 func _ready():
+	background.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.dark_bg, GameManager.TRUCK_ART_COLORS.orange))
+	back_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.blue, GameManager.TRUCK_ART_COLORS.yellow, 2))
 	update_ui()
 
 func update_ui():
@@ -15,6 +19,12 @@ func update_ui():
 		var progress = GameManager.achievement_progress.get(id, 0)
 
 		var panel = PanelContainer.new()
+		panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(
+			GameManager.TRUCK_ART_COLORS.blue if not unlocked else GameManager.TRUCK_ART_COLORS.green,
+			GameManager.TRUCK_ART_COLORS.yellow if not unlocked else GameManager.TRUCK_ART_COLORS.white,
+			2
+		))
+
 		var hbox = HBoxContainer.new()
 		panel.add_child(hbox)
 
@@ -34,6 +44,15 @@ func update_ui():
 		var progress_label = Label.new()
 		progress_label.text = "Progress: " + str(progress) + " / " + str(ach.goal)
 		info_vbox.add_child(progress_label)
+
+		# Badge Icon
+		var badge = TextureRect.new()
+		badge.texture = load("res://icon.svg")
+		badge.custom_minimum_size = Vector2(64, 64)
+		badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		badge.self_modulate = GameManager.TRUCK_ART_COLORS.yellow if unlocked else Color.GRAY
+		hbox.add_child(badge)
 
 		var reward_vbox = VBoxContainer.new()
 		hbox.add_child(reward_vbox)
@@ -61,4 +80,4 @@ func update_ui():
 		achievement_list.add_child(panel)
 
 func _on_back_button_pressed():
-	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+	GameManager.goto_scene("res://ui/MainMenu.tscn")

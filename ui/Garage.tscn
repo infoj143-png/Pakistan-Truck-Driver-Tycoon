@@ -1,6 +1,7 @@
 [gd_scene load_steps=2 format=3 uid="uid://dg7i4u5l1r8k2"]
 
 [ext_resource type="Script" path="res://scripts/Garage.gd" id="1_y7r3s"]
+[ext_resource type="Texture2D" uid="uid://cr07dgv4x707m" path="res://icon.svg" id="2_i4svg"]
 
 [node name="Garage" type="Control"]
 layout_mode = 3
@@ -26,10 +27,13 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -200.0
-offset_top = 30.0
+offset_top = 10.0
 offset_right = 200.0
-offset_bottom = 85.0
+offset_bottom = 65.0
 grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.717647, 0, 1)
+theme_override_colors/font_outline_color = Color(0.901961, 0.223529, 0.27451, 1)
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 40
 text = "TRUCK GARAGE"
 horizontal_alignment = 1
@@ -50,16 +54,37 @@ theme_override_font_sizes/font_size = 24
 text = "Rs. 1000"
 horizontal_alignment = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="PreviewContainer" type="Control" parent="."]
 layout_mode = 1
-anchors_preset = 14
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -225.0
-offset_bottom = 225.0
+offset_left = -640.0
+offset_top = -360.0
+offset_right = 640.0
+offset_bottom = 360.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+
+[node name="TruckPreview" type="Sprite2D" parent="PreviewContainer"]
+unique_name_in_owner = true
+position = Vector2(640, 180)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_i4svg")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -380.0
+offset_bottom = -90.0
+grow_horizontal = 2
+grow_vertical = 0
 vertical_scroll_mode = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="ScrollContainer"]
@@ -76,19 +101,46 @@ size_flags_vertical = 3
 theme_override_constants/separation = 30
 
 [node name="Back" type="Button" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
+anchors_preset = 2
 anchor_top = 1.0
-anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -80.0
-offset_right = 60.0
-offset_bottom = -30.0
-grow_horizontal = 2
+offset_left = 20.0
+offset_top = -70.0
+offset_right = 140.0
+offset_bottom = -20.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 20
 text = "BACK"
+
+[node name="SkinPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -220.0
+offset_top = 80.0
+offset_right = -20.0
+offset_bottom = 330.0
+grow_horizontal = 0
+
+[node name="VBox" type="VBoxContainer" parent="SkinPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SkinPanel/VBox"]
+layout_mode = 2
+text = "SKINS"
+horizontal_alignment = 1
+
+[node name="SkinScroll" type="ScrollContainer" parent="SkinPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SkinList" type="VBoxContainer" parent="SkinPanel/VBox/SkinScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 
 [connection signal="pressed" from="Back" to="." method="_on_back_pressed"]

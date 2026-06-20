@@ -14,4 +14,4 @@ func update_ui():
 	level_label.text = "Level: " + str(GameManager.level)
 
 func _on_back_pressed():
-	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+	GameManager.goto_scene("res://ui/MainMenu.tscn")

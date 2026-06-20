@@ -14,4 +14,4 @@ func _on_mission_completed(money, xp):
 
 func _on_continue_pressed():
 	hide()
-	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+	GameManager.goto_scene("res://ui/MainMenu.tscn")
