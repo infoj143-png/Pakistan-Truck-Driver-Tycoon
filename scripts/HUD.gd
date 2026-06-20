@@ -37,6 +37,15 @@ func _ready():
 	update_ui()
 	_update_weather_ui()
 
+func _process(_delta):
+	# Update fuel in real-time if a truck exists
+	var truck = get_tree().get_first_node_in_group("truck")
+	if fuel_bar:
+		if truck:
+			fuel_bar.value = truck.fuel
+		else:
+			fuel_bar.value = GameManager.fuel
+
 func update_ui():
 	if money_label:
 		money_label.text = "Rs. " + str(GameManager.money)
@@ -44,14 +53,6 @@ func update_ui():
 		xp_label.text = "XP: " + str(GameManager.xp) + " (Lvl " + str(GameManager.level) + ")"
 
 	_on_time_changed(WeatherManager.get_hour(), WeatherManager.get_minute())
-
-	# Try to find truck in scene to update fuel
-	var truck = get_tree().get_first_node_in_group("truck")
-	if fuel_bar:
-		if truck:
-			fuel_bar.value = truck.fuel
-		else:
-			fuel_bar.value = GameManager.fuel
 
 func _on_time_changed(hour, minute):
 	if time_label:
@@ -72,7 +73,7 @@ func setup_touch_visuals():
 
 	# Create simple textures for touch buttons since icon.svg might be missing or ugly
 	var tex = PlaceholderTexture2D.new()
-	tex.size = Vector2(64, 64)
+	tex.size = Vector2(80, 80)
 
 	left_btn.texture_normal = tex
 	right_btn.texture_normal = tex
@@ -90,7 +91,9 @@ func _add_label_to_button(btn, text):
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.custom_minimum_size = Vector2(64, 64)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Center the label on the button
+	label.size = Vector2(80, 80)
 	btn.add_child(label)
 
 func _on_toggle_map_button_pressed():

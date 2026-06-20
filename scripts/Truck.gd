@@ -121,7 +121,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("horn") or Input.is_key_pressed(KEY_H):
 		play_horn()
 
-func update_audio_pitch(delta):
+func update_audio_pitch(_delta):
 	if engine_sound:
 		var speed_percent = velocity.length() / speed
 		engine_sound.pitch_scale = lerp(1.0, 2.0, speed_percent)

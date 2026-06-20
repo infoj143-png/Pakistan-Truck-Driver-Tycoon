@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bank_scene_uid"]
+[gd_scene load_steps=2 format=3 uid="uid://dp6t7r3v5l8y4"]
 
 [ext_resource type="Script" path="res://scripts/Bank.gd" id="1_bank"]
 
