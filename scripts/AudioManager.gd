@@ -45,20 +45,20 @@ func set_bus_volume(bus_name: String, value: float):
 	save_audio_settings()
 
 func play_sound(sound_name: String, bus: String = "SFX"):
-	var player = AudioStreamPlayer.new()
-	add_child(player)
-	player.bus = bus
+	var sound_path = "res://assets/audio/" + sound_name + ".wav"
 
-	# Placeholder for actual stream loading
-	# var stream = load("res://assets/audio/" + sound_name + ".wav")
-	# player.stream = stream
-
-	# player.play()
-	# player.finished.connect(player.queue_free)
-
-	# Since we don't have real files, we just print for now
-	print("Playing sound: ", sound_name, " on bus: ", bus)
-	player.queue_free()
+	# Only instantiate player if the resource exists
+	if FileAccess.file_exists(sound_path):
+		var player = AudioStreamPlayer.new()
+		add_child(player)
+		player.bus = bus
+		player.stream = load(sound_path)
+		player.play()
+		player.finished.connect(player.queue_free)
+	else:
+		# Since we don't have real files yet, we just print for now
+		# In a production release, this prevents error spam and node leaks
+		print("Requested sound missing (intended for release): ", sound_name, " on bus: ", bus)
 
 func play_ui_click():
 	play_sound("ui_click")

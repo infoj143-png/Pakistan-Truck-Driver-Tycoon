@@ -109,6 +109,9 @@ var unlocked_skins: Array = ["default"]
 var selected_skin: String = "default"
 var achievement_progress: Dictionary = {} # id -> current_value
 
+# Cached data for WeatherManager in case of initialization order issues
+var _loaded_weather_state = null
+
 signal stats_changed
 signal mission_completed(reward_money, reward_xp)
 signal daily_report_generated(report_data)
@@ -378,7 +381,7 @@ func process_daily_income():
 		var driver = hired_drivers[driver_id]
 		total_salaries += driver.salary
 
-		if driver.assigned_truck != "":
+		if driver.assigned_truck != "" and owned_trucks.has(driver.assigned_truck):
 			var truck_stats = get_truck_stats(driver.assigned_truck)
 			var truck_data = owned_trucks[driver.assigned_truck]
 
@@ -526,15 +529,17 @@ func check_daily_login():
 			var last_unix = Time.get_unix_time_from_datetime_dict(last_midnight)
 
 			var seconds_diff = today_unix - last_unix
-			# 86400 seconds in a day. If <= 86400, it was yesterday.
-			var is_yesterday = seconds_diff <= 86400
+			# 86400 seconds in a day.
+			var is_yesterday = seconds_diff == 86400
 
 			if is_yesterday:
 				consecutive_logins += 1
 				if consecutive_logins > 7:
 					consecutive_logins = 1
-			else:
+			elif seconds_diff > 86400:
 				consecutive_logins = 1
+			# if seconds_diff < 0, they set their clock back.
+			# We don't advance consecutive_logins to prevent exploits.
 		else:
 			consecutive_logins = 1
 
@@ -636,8 +641,8 @@ func save_game():
 			"selected_skin": selected_skin,
 			"achievement_progress": achievement_progress,
 			"cargo_loaded": cargo_loaded,
-			"current_weather": weather_node.current_weather if weather_node else 0,
-			"current_time": weather_node.current_time if weather_node else 8.0
+			"current_weather": weather_node.current_weather if weather_node else (_loaded_weather_state.weather if _loaded_weather_state else 0),
+			"current_time": weather_node.current_time if weather_node else (_loaded_weather_state.time if _loaded_weather_state else 8.0)
 		}
 		file.store_var(data)
 		file.close()
@@ -684,10 +689,15 @@ func load_game():
 			achievement_progress = data.get("achievement_progress", {})
 			cargo_loaded = data.get("cargo_loaded", false)
 
+			_loaded_weather_state = {
+				"weather": data.get("current_weather", 0),
+				"time": data.get("current_time", 8.0)
+			}
+
 			var weather_node = get_node_or_null("/root/WeatherManager")
 			if weather_node:
-				weather_node.current_weather = data.get("current_weather", 0) # 0 is Weather.CLEAR
-				weather_node.current_time = data.get("current_time", 8.0)
+				weather_node.current_weather = _loaded_weather_state.weather
+				weather_node.current_time = _loaded_weather_state.time
 
 			_unlock_cities_for_level()
 		file.close()
