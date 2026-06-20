@@ -165,8 +165,8 @@ func goto_scene(path: String):
 	save_game()
 
 	var loading_screen = load("res://ui/Loading.tscn").instantiate()
-	# Set mouse filter to ignore so it doesn't block inputs during transition
-	loading_screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Set mouse filter to stop so it blocks inputs during transition to prevent double clicks
+	loading_screen.mouse_filter = Control.MOUSE_FILTER_STOP
 	get_tree().root.add_child(loading_screen)
 
 	# Wait a bit to show the loading screen
@@ -515,6 +515,13 @@ func refill_fuel_cost(amount: float):
 		save_game()
 		return true
 	return false
+
+func emergency_refuel():
+	# Free 10% fuel for emergencies
+	fuel = 10.0
+	stats_changed.emit()
+	save_game()
+	print("Emergency Fuel injected!")
 
 # Reward and Achievement Logic
 func check_daily_login():

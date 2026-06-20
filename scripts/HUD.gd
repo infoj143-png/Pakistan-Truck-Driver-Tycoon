@@ -12,6 +12,8 @@ extends CanvasLayer
 @onready var weather_panel = %WeatherPanel
 @onready var minimap = %MiniMap
 @onready var toggle_map_btn = %ToggleMapButton
+@onready var refuel_btn = %RefuelButton
+@onready var emergency_fuel_btn = %EmergencyFuelButton
 
 func _ready():
 	# Apply styling
@@ -33,6 +35,14 @@ func _ready():
 	if toggle_map_btn:
 		toggle_map_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["orange"], GameManager.TRUCK_ART_COLORS["white"], 2))
 
+	if refuel_btn:
+		refuel_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["green"], GameManager.TRUCK_ART_COLORS["white"], 3))
+		refuel_btn.pressed.connect(_on_refuel_pressed)
+
+	if emergency_fuel_btn:
+		emergency_fuel_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["red"], GameManager.TRUCK_ART_COLORS["yellow"], 3))
+		emergency_fuel_btn.pressed.connect(_on_emergency_fuel_pressed)
+
 	setup_touch_visuals()
 	update_ui()
 	_update_weather_ui()
@@ -43,8 +53,25 @@ func _process(_delta):
 	if fuel_bar:
 		if truck:
 			fuel_bar.value = truck.fuel
+			if refuel_btn:
+				refuel_btn.visible = truck.is_near_fuel_station and truck.fuel < truck.max_fuel
+			if emergency_fuel_btn:
+				emergency_fuel_btn.visible = truck.fuel <= 0
 		else:
 			fuel_bar.value = GameManager.fuel
+
+func _on_refuel_pressed():
+	AudioManager.play_ui_click()
+	var truck = get_tree().get_first_node_in_group("truck")
+	if truck:
+		truck.refill_fuel()
+
+func _on_emergency_fuel_pressed():
+	AudioManager.play_ui_click()
+	GameManager.emergency_refuel()
+	var truck = get_tree().get_first_node_in_group("truck")
+	if truck:
+		truck.fuel = GameManager.fuel
 
 func update_ui():
 	if money_label:

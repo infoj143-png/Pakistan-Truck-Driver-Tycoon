@@ -112,6 +112,39 @@ offset_bottom = 510.0
 grow_horizontal = 0
 text = "Hide Map"
 
+[node name="ActionButtons" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="RefuelButton" type="Button" parent="Control/ActionButtons"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "REFUEL"
+
+[node name="EmergencyFuelButton" type="Button" parent="Control/ActionButtons"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "EMERGENCY FUEL"
+
 [node name="WeatherContainer" type="VBoxContainer" parent="Control/WeatherPanel"]
 layout_mode = 2
 
@@ -145,14 +178,14 @@ grow_vertical = 0
 
 [node name="Steering" type="Control" parent="Control/TouchControls"]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
 offset_left = 50.0
-offset_top = -100.0
+offset_top = -220.0
 offset_right = 350.0
-offset_bottom = 100.0
-grow_vertical = 2
+offset_bottom = -20.0
+grow_vertical = 0
 
 [node name="Left" type="TouchScreenButton" parent="Control/TouchControls/Steering"]
 position = Vector2(0, 50)
@@ -170,17 +203,17 @@ visibility_mode = 1
 
 [node name="Pedals" type="Control" parent="Control/TouchControls"]
 layout_mode = 1
-anchors_preset = 6
+anchors_preset = 3
 anchor_left = 1.0
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 0.5
+anchor_bottom = 1.0
 offset_left = -350.0
-offset_top = -100.0
+offset_top = -220.0
 offset_right = -50.0
-offset_bottom = 100.0
+offset_bottom = -20.0
 grow_horizontal = 0
-grow_vertical = 2
+grow_vertical = 0
 
 [node name="Up" type="TouchScreenButton" parent="Control/TouchControls/Pedals"]
 position = Vector2(150, 0)

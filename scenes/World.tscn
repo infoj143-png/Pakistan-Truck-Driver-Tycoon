@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b8k7w2m3n5p1q" path="res://scenes/Truck.tscn" id="2_truck"]
 [ext_resource type="PackedScene" uid="uid://df7j1k2m3n4p5" path="res://scenes/Road.tscn" id="3_road"]
 [ext_resource type="PackedScene" uid="uid://d3r5m1v4p2q6n" path="res://scenes/Zone.tscn" id="4_zone"]
+[ext_resource type="PackedScene" uid="uid://d1f2u3s4t5a6n" path="res://scenes/FuelStation.tscn" id="7_fuel"]
 [ext_resource type="PackedScene" uid="uid://d2p1s3r4n5m6q" path="res://ui/HUD.tscn" id="5_hud"]
 [ext_resource type="PackedScene" uid="uid://b5m6n7p8q9r0s" path="res://ui/MissionCompletePopup.tscn" id="6_popup"]
 
@@ -35,6 +36,12 @@ rotation = 1.5708
 [node name="Truck" parent="." groups=["truck"] instance=ExtResource("2_truck")]
 position = Vector2(100, 360)
 rotation = 1.5708
+
+[node name="FuelStation" parent="." instance=ExtResource("7_fuel")]
+position = Vector2(500, 360)
+
+[node name="FuelStation2" parent="." instance=ExtResource("7_fuel")]
+position = Vector2(1000, 500)
 
 [node name="PickupZone" parent="." instance=ExtResource("4_zone")]
 position = Vector2(200, 700)
