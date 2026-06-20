@@ -173,7 +173,7 @@ func goto_scene(path: String):
 	await get_tree().process_frame
 	loading_screen.queue_free()
 
-func get_truck_art_stylebox(bg_color: Color = TRUCK_ART_COLORS.blue, border_color: Color = TRUCK_ART_COLORS.yellow, border_width: int = 4):
+func get_truck_art_stylebox(bg_color: Color = TRUCK_ART_COLORS["blue"], border_color: Color = TRUCK_ART_COLORS["yellow"], border_width: int = 4):
 	var sb = StyleBoxFlat.new()
 	sb.bg_color = bg_color
 	sb.border_width_left = border_width
@@ -225,7 +225,7 @@ func buy_truck(truck_id: String):
 	if not TRUCK_DATA.has(truck_id):
 		return false
 
-	var price = TRUCK_DATA[truck_id].price
+	var price = TRUCK_DATA[truck_id]["price"]
 	if money >= price and not owned_trucks.has(truck_id):
 		money -= price
 		owned_trucks[truck_id] = {"speed": 0, "fuel": 0, "cargo": 0, "durability": 0, "condition": 100.0}
@@ -250,7 +250,7 @@ func upgrade_truck(truck_id: String, stat_id: String):
 	if current_level >= 5: # Max level 5
 		return false
 
-	var base_cost = TRUCK_DATA[truck_id].upgrade_costs[stat_id]
+	var base_cost = TRUCK_DATA[truck_id]["upgrade_costs"][stat_id]
 	var cost = base_cost * (current_level + 1)
 
 	if money >= cost:
@@ -265,16 +265,16 @@ func get_truck_stats(truck_id: String):
 	if not TRUCK_DATA.has(truck_id):
 		return null
 
-	var base_stats = TRUCK_DATA[truck_id].base_stats
+	var base_stats = TRUCK_DATA[truck_id]["base_stats"]
 	var stats = base_stats.duplicate()
 
 	if owned_trucks.has(truck_id):
 		var upgrades = owned_trucks[truck_id]
 		# Each upgrade level adds 10% to the base stat
-		stats.speed += base_stats.speed * (upgrades.speed * 0.1)
-		stats.fuel += base_stats.fuel * (upgrades.fuel * 0.1)
-		stats.cargo += base_stats.cargo * (upgrades.cargo * 0.1)
-		stats.durability += base_stats.durability * (upgrades.durability * 0.1)
+		stats["speed"] += base_stats["speed"] * (upgrades["speed"] * 0.1)
+		stats["fuel"] += base_stats["fuel"] * (upgrades["fuel"] * 0.1)
+		stats["cargo"] += base_stats["cargo"] * (upgrades["cargo"] * 0.1)
+		stats["durability"] += base_stats["durability"] * (upgrades["durability"] * 0.1)
 
 	return stats
 
@@ -290,7 +290,7 @@ func _check_level_up():
 
 func _unlock_cities_for_level():
 	for city_name in cities:
-		if cities[city_name].unlock_level <= level:
+		if cities[city_name]["unlock_level"] <= level:
 			if not city_name in unlocked_cities:
 				unlocked_cities.append(city_name)
 				print("Unlocked City: ", city_name)
@@ -322,7 +322,7 @@ func hire_driver(pool_index: int):
 	if money >= HIRING_COST:
 		money -= HIRING_COST
 		var driver = driver_pool[pool_index]
-		hired_drivers[driver.id] = driver
+		hired_drivers[driver["id"]] = driver
 		driver_pool.remove_at(pool_index)
 
 		# Refill pool if empty
@@ -359,10 +359,10 @@ func assign_driver_to_truck(driver_id: String, truck_id: String):
 
 	# Ensure no other driver is assigned to this truck
 	for id in hired_drivers:
-		if hired_drivers[id].assigned_truck == truck_id:
-			hired_drivers[id].assigned_truck = ""
+		if hired_drivers[id]["assigned_truck"] == truck_id:
+			hired_drivers[id]["assigned_truck"] = ""
 
-	hired_drivers[driver_id].assigned_truck = truck_id
+	hired_drivers[driver_id]["assigned_truck"] = truck_id
 	save_game()
 	return true
 
@@ -379,22 +379,22 @@ func process_daily_income():
 	# Drivers and Passive Income
 	for driver_id in hired_drivers:
 		var driver = hired_drivers[driver_id]
-		total_salaries += driver.salary
+		total_salaries += driver["salary"]
 
-		if driver.assigned_truck != "" and owned_trucks.has(driver.assigned_truck):
-			var truck_stats = get_truck_stats(driver.assigned_truck)
-			var truck_data = owned_trucks[driver.assigned_truck]
+		if driver["assigned_truck"] != "" and owned_trucks.has(driver["assigned_truck"]):
+			var truck_stats = get_truck_stats(driver["assigned_truck"])
+			var truck_data = owned_trucks[driver["assigned_truck"]]
 
 			if truck_stats:
 				# Maintenance cost based on condition
-				var maintenance = int((100.0 - truck_data.condition) * 2)
+				var maintenance = int((100.0 - truck_data["condition"]) * 2)
 				total_maintenance += maintenance
 
-				var income = int(BASE_PASSIVE_INCOME * driver.skills.efficiency * truck_stats.cargo * event_reward_mult)
+				var income = int(BASE_PASSIVE_INCOME * driver["skills"]["efficiency"] * truck_stats["cargo"] * event_reward_mult)
 				total_income += income
 
 				# Reliability check - random chance to lose reputation or income if unreliable
-				if randf() > driver.skills.reliability:
+				if randf() > driver["skills"]["reliability"]:
 					daily_rep_change -= 1
 				else:
 					daily_rep_change += 1
@@ -405,10 +405,10 @@ func process_daily_income():
 	# Loan Repayments
 	var remaining_loans = []
 	for loan in active_loans:
-		var installment = int((loan.amount * (1.0 + loan.interest_rate)) / 10.0) # 10 installments
+		var installment = int((loan["amount"] * (1.0 + loan["interest_rate"])) / 10.0) # 10 installments
 		total_loan_repayments += installment
-		loan.remaining_installments -= 1
-		if loan.remaining_installments > 0:
+		loan["remaining_installments"] -= 1
+		if loan["remaining_installments"] > 0:
 			remaining_loans.append(loan)
 	active_loans = remaining_loans
 
@@ -427,7 +427,7 @@ func process_daily_income():
 		"expenses": total_expenses,
 		"net_profit": net_profit,
 		"rep_change": daily_rep_change,
-		"event": active_economic_event.name
+		"event": active_economic_event["name"]
 	}
 
 	daily_profit_history.append(report)
@@ -451,8 +451,8 @@ func trigger_economic_event():
 	]
 
 	active_economic_event = events[randi() % events.size()]
-	base_fuel_price = 150.0 * active_economic_event.fuel_price_mult
-	print("New Economic Event: ", active_economic_event.name)
+	base_fuel_price = 150.0 * active_economic_event["fuel_price_mult"]
+	print("New Economic Event: ", active_economic_event["name"])
 
 func take_loan(amount: int):
 	var interest_rate = 0.1 # 10% interest
@@ -473,7 +473,7 @@ func repay_loan(index: int):
 		return false
 
 	var loan = active_loans[index]
-	var remaining_total = int(loan.amount * (1.0 + loan.interest_rate) * (loan.remaining_installments / 10.0))
+	var remaining_total = int(loan["amount"] * (1.0 + loan["interest_rate"]) * (loan["remaining_installments"] / 10.0))
 
 	if money >= remaining_total:
 		money -= remaining_total
@@ -487,19 +487,19 @@ func repair_truck(truck_id: String):
 	if not owned_trucks.has(truck_id):
 		return false
 
-	var condition = owned_trucks[truck_id].condition
+	var condition = owned_trucks[truck_id]["condition"]
 	var repair_cost = int((100.0 - condition) * 50) # Rs 50 per 1% damage
 
 	if money >= repair_cost:
 		money -= repair_cost
-		owned_trucks[truck_id].condition = 100.0
+		owned_trucks[truck_id]["condition"] = 100.0
 		stats_changed.emit()
 		save_game()
 		return true
 	return false
 
 func refill_fuel_cost(amount: float):
-	var city_mult = cities[current_city].fuel_mult
+	var city_mult = cities[current_city]["fuel_mult"]
 	var total_cost = int(amount * base_fuel_price * city_mult)
 
 	if money >= total_cost:
@@ -512,10 +512,10 @@ func refill_fuel_cost(amount: float):
 # Reward and Achievement Logic
 func check_daily_login():
 	var now_dict = Time.get_date_dict_from_system()
-	var today_str = "%d-%d-%d" % [now_dict.year, now_dict.month, now_dict.day]
+	var today_str = "%d-%d-%d" % [now_dict["year"], now_dict["month"], now_dict["day"]]
 
 	# Create a dictionary for today at midnight to get a clean unix timestamp for comparison
-	var today_midnight = {"year": now_dict.year, "month": now_dict.month, "day": now_dict.day, "hour": 0, "minute": 0, "second": 0}
+	var today_midnight = {"year": now_dict["year"], "month": now_dict["month"], "day": now_dict["day"], "hour": 0, "minute": 0, "second": 0}
 	var today_unix = Time.get_unix_time_from_datetime_dict(today_midnight)
 
 	if last_login_date == "":
@@ -553,13 +553,13 @@ func claim_daily_reward():
 		return false
 
 	var reward = DAILY_REWARDS[consecutive_logins - 1]
-	match reward.type:
+	match reward["type"]:
 		"money":
-			add_money(reward.amount)
+			add_money(reward["amount"])
 		"xp":
-			add_xp(reward.amount)
+			add_xp(reward["amount"])
 		"skin":
-			unlock_skin(reward.id)
+			unlock_skin(reward["id"])
 
 	reward_claimed_today = true
 	save_game()
@@ -582,16 +582,16 @@ func set_selected_skin(skin_id: String):
 func update_achievement_progress(type: String, amount: int, is_absolute: bool = false):
 	for id in ACHIEVEMENTS:
 		var ach = ACHIEVEMENTS[id]
-		if ach.type == type:
+		if ach["type"] == type:
 			var current = achievement_progress.get(id, 0)
-			if current < ach.goal:
+			if current < ach["goal"]:
 				if is_absolute:
 					current = max(current, amount)
 				else:
 					current += amount
 				achievement_progress[id] = current
 
-				if current >= ach.goal and not unlocked_achievements.has(id):
+				if current >= ach["goal"] and not unlocked_achievements.has(id):
 					unlock_achievement(id)
 
 	save_game()
@@ -602,11 +602,11 @@ func unlock_achievement(id: String):
 		var ach = ACHIEVEMENTS[id]
 
 		if ach.has("reward_money"):
-			add_money(ach.reward_money)
+			add_money(ach["reward_money"])
 		if ach.has("reward_xp"):
-			add_xp(ach.reward_xp)
+			add_xp(ach["reward_xp"])
 		if ach.has("reward_skin"):
-			unlock_skin(ach.reward_skin)
+			unlock_skin(ach["reward_skin"])
 
 		achievement_unlocked.emit(id)
 		save_game()
@@ -641,8 +641,8 @@ func save_game():
 			"selected_skin": selected_skin,
 			"achievement_progress": achievement_progress,
 			"cargo_loaded": cargo_loaded,
-			"current_weather": weather_node.current_weather if weather_node else (_loaded_weather_state.weather if _loaded_weather_state else 0),
-			"current_time": weather_node.current_time if weather_node else (_loaded_weather_state.time if _loaded_weather_state else 8.0)
+			"current_weather": weather_node.current_weather if weather_node else (_loaded_weather_state["weather"] if _loaded_weather_state else 0),
+			"current_time": weather_node.current_time if weather_node else (_loaded_weather_state["time"] if _loaded_weather_state else 8.0)
 		}
 		file.store_var(data)
 		file.close()
@@ -696,8 +696,8 @@ func load_game():
 
 			var weather_node = get_node_or_null("/root/WeatherManager")
 			if weather_node:
-				weather_node.current_weather = _loaded_weather_state.weather
-				weather_node.current_time = _loaded_weather_state.time
+				weather_node.current_weather = _loaded_weather_state["weather"]
+				weather_node.current_time = _loaded_weather_state["time"]
 
 			_unlock_cities_for_level()
 		file.close()

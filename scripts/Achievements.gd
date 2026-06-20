@@ -5,8 +5,8 @@ extends Control
 @onready var back_button = $VBoxContainer/BackButton
 
 func _ready():
-	background.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.dark_bg, GameManager.TRUCK_ART_COLORS.orange))
-	back_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.blue, GameManager.TRUCK_ART_COLORS.yellow, 2))
+	background.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["dark_bg"], GameManager.TRUCK_ART_COLORS["orange"]))
+	back_button.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["blue"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
 	update_ui()
 
 func update_ui():
@@ -20,8 +20,8 @@ func update_ui():
 
 		var panel = PanelContainer.new()
 		panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(
-			GameManager.TRUCK_ART_COLORS.blue if not unlocked else GameManager.TRUCK_ART_COLORS.green,
-			GameManager.TRUCK_ART_COLORS.yellow if not unlocked else GameManager.TRUCK_ART_COLORS.white,
+			GameManager.TRUCK_ART_COLORS["blue"] if not unlocked else GameManager.TRUCK_ART_COLORS["green"],
+			GameManager.TRUCK_ART_COLORS["yellow"] if not unlocked else GameManager.TRUCK_ART_COLORS["white"],
 			2
 		))
 
@@ -33,16 +33,16 @@ func update_ui():
 		hbox.add_child(info_vbox)
 
 		var name_label = Label.new()
-		name_label.text = ach.name + ( " [UNLOCKED]" if unlocked else "" )
+		name_label.text = ach["name"] + ( " [UNLOCKED]" if unlocked else "" )
 		name_label.add_theme_font_size_override("font_size", 20)
 		info_vbox.add_child(name_label)
 
 		var desc_label = Label.new()
-		desc_label.text = ach.description
+		desc_label.text = ach["description"]
 		info_vbox.add_child(desc_label)
 
 		var progress_label = Label.new()
-		progress_label.text = "Progress: " + str(progress) + " / " + str(ach.goal)
+		progress_label.text = "Progress: " + str(progress) + " / " + str(ach["goal"])
 		info_vbox.add_child(progress_label)
 
 		# Badge Icon
@@ -51,7 +51,7 @@ func update_ui():
 		badge.custom_minimum_size = Vector2(64, 64)
 		badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		badge.self_modulate = GameManager.TRUCK_ART_COLORS.yellow if unlocked else Color.GRAY
+		badge.self_modulate = GameManager.TRUCK_ART_COLORS["yellow"] if unlocked else Color.GRAY
 		hbox.add_child(badge)
 
 		var reward_vbox = VBoxContainer.new()
@@ -63,15 +63,15 @@ func update_ui():
 
 		if ach.has("reward_money"):
 			var r = Label.new()
-			r.text = "Rs. " + str(ach.reward_money)
+			r.text = "Rs. " + str(ach["reward_money"])
 			reward_vbox.add_child(r)
 		if ach.has("reward_xp"):
 			var r = Label.new()
-			r.text = str(ach.reward_xp) + " XP"
+			r.text = str(ach["reward_xp"]) + " XP"
 			reward_vbox.add_child(r)
 		if ach.has("reward_skin"):
 			var r = Label.new()
-			r.text = "Skin: " + GameManager.SKINS[ach.reward_skin].name
+			r.text = "Skin: " + GameManager.SKINS[ach["reward_skin"]]["name"]
 			reward_vbox.add_child(r)
 
 		if unlocked:

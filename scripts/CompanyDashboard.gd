@@ -23,13 +23,13 @@ func update_ui():
 	if not fuel_price_label.get_parent():
 		%StatsContainer.add_child(fuel_price_label)
 
-	event_label.text = "Market: " + GameManager.active_economic_event.name
+	event_label.text = "Market: " + GameManager.active_economic_event["name"]
 	if not event_label.get_parent():
 		%StatsContainer.add_child(event_label)
 
 	var total_debt = 0
 	for loan in GameManager.active_loans:
-		total_debt += int(loan.amount * (1.0 + loan.interest_rate) * (loan.remaining_installments / 10.0))
+		total_debt += int(loan["amount"] * (1.0 + loan["interest_rate"]) * (loan["remaining_installments"] / 10.0))
 	loan_label.text = "Total Debt: Rs. " + str(total_debt)
 	if not loan_label.get_parent():
 		%StatsContainer.add_child(loan_label)

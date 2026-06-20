@@ -5,7 +5,7 @@ extends Control
 
 func _ready():
 	# Apply styling
-	background_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.dark_bg, GameManager.TRUCK_ART_COLORS.red))
+	background_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["dark_bg"], GameManager.TRUCK_ART_COLORS["red"]))
 
 	for child in buttons_container.get_children():
 		if child is Button:
@@ -13,9 +13,9 @@ func _ready():
 			child.mouse_exited.connect(_on_button_mouse_exited.bind(child))
 			child.pivot_offset = child.size / 2.0
 			# Apply style to buttons too
-			child.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.blue, GameManager.TRUCK_ART_COLORS.yellow, 2))
-			child.add_theme_stylebox_override("hover", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.orange, GameManager.TRUCK_ART_COLORS.yellow, 3))
-			child.add_theme_stylebox_override("pressed", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.red, GameManager.TRUCK_ART_COLORS.white, 2))
+			child.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["blue"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+			child.add_theme_stylebox_override("hover", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["orange"], GameManager.TRUCK_ART_COLORS["yellow"], 3))
+			child.add_theme_stylebox_override("pressed", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["red"], GameManager.TRUCK_ART_COLORS["white"], 2))
 
 	# Auto-popup Daily Rewards if not claimed today
 	if not GameManager.reward_claimed_today:

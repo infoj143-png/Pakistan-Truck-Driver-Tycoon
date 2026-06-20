@@ -15,16 +15,16 @@ extends CanvasLayer
 
 func _ready():
 	# Apply styling
-	money_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.blue, GameManager.TRUCK_ART_COLORS.yellow, 2))
-	xp_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.green, GameManager.TRUCK_ART_COLORS.white, 2))
-	fuel_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.red, GameManager.TRUCK_ART_COLORS.yellow, 2))
-	weather_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.pink, GameManager.TRUCK_ART_COLORS.white, 2))
+	money_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["blue"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+	xp_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["green"], GameManager.TRUCK_ART_COLORS["white"], 2))
+	fuel_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["red"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+	weather_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["pink"], GameManager.TRUCK_ART_COLORS["white"], 2))
 
 	GameManager.stats_changed.connect(update_ui)
 	WeatherManager.time_changed.connect(_on_time_changed)
 	WeatherManager.weather_changed.connect(_on_weather_changed)
-	minimap.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.dark_bg, GameManager.TRUCK_ART_COLORS.yellow, 2))
-	toggle_map_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.orange, GameManager.TRUCK_ART_COLORS.white, 2))
+	minimap.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["dark_bg"], GameManager.TRUCK_ART_COLORS["yellow"], 2))
+	toggle_map_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS["orange"], GameManager.TRUCK_ART_COLORS["white"], 2))
 
 	update_ui()
 	_update_weather_ui()

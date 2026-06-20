@@ -26,8 +26,8 @@ const TIME_COLORS = {
 func _ready():
 	# Initialize from GameManager if it has loaded weather state
 	if GameManager and GameManager._loaded_weather_state:
-		current_weather = GameManager._loaded_weather_state.weather
-		current_time = GameManager._loaded_weather_state.time
+		current_weather = GameManager._loaded_weather_state["weather"]
+		current_time = GameManager._loaded_weather_state["time"]
 		weather_changed.emit(current_weather)
 
 func _process(delta):

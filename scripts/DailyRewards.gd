@@ -29,12 +29,12 @@ func update_ui():
 		vbox.add_child(day_label)
 
 		var reward_label = Label.new()
-		if reward.type == "money":
-			reward_label.text = "Rs. " + str(reward.amount)
-		elif reward.type == "xp":
-			reward_label.text = str(reward.amount) + " XP"
-		elif reward.type == "skin":
-			reward_label.text = "SKIN: " + reward.name
+		if reward["type"] == "money":
+			reward_label.text = "Rs. " + str(reward["amount"])
+		elif reward["type"] == "xp":
+			reward_label.text = str(reward["amount"]) + " XP"
+		elif reward["type"] == "skin":
+			reward_label.text = "SKIN: " + reward["name"]
 		reward_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(reward_label)
 
