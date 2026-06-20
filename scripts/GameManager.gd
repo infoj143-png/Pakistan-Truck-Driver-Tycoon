@@ -7,6 +7,7 @@ var money: int = 1000
 var xp: int = 0
 var level: int = 1
 var fuel: float = 100.0
+var cargo_loaded: bool = false
 
 # Company Stats
 var hired_drivers: Dictionary = {} # id -> {name, level, xp, salary, skills: {efficiency, speed, reliability}, assigned_truck}
@@ -634,6 +635,7 @@ func save_game():
 			"unlocked_skins": unlocked_skins,
 			"selected_skin": selected_skin,
 			"achievement_progress": achievement_progress,
+			"cargo_loaded": cargo_loaded,
 			"current_weather": weather_node.current_weather if weather_node else 0,
 			"current_time": weather_node.current_time if weather_node else 8.0
 		}
@@ -680,6 +682,7 @@ func load_game():
 			unlocked_skins = data.get("unlocked_skins", ["default"])
 			selected_skin = data.get("selected_skin", "default")
 			achievement_progress = data.get("achievement_progress", {})
+			cargo_loaded = data.get("cargo_loaded", false)
 
 			var weather_node = get_node_or_null("/root/WeatherManager")
 			if weather_node:
