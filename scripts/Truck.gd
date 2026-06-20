@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name Truck
 
 @export var speed = 300.0
 @export var acceleration = 5.0
@@ -40,15 +41,19 @@ func _ready():
 func setup_audio():
 	engine_sound = AudioStreamPlayer2D.new()
 	engine_sound.bus = "SFX"
-	# engine_sound.stream = load("res://assets/audio/engine_loop.wav")
-	# engine_sound.autoplay = true
-	# engine_sound.loop = true
+	var engine_path = "res://assets/audio/engine_loop.wav"
+	if FileAccess.file_exists(engine_path):
+		engine_sound.stream = load(engine_path)
+		engine_sound.autoplay = true
+		# engine_sound.loop = true # Godot 4.x handles looping in import or stream settings
+		engine_sound.play()
 	add_child(engine_sound)
-	# engine_sound.play()
 
 	horn_sound = AudioStreamPlayer2D.new()
 	horn_sound.bus = "Horn"
-	# horn_sound.stream = load("res://assets/audio/truck_horn.wav")
+	var horn_path = "res://assets/audio/truck_horn.wav"
+	if FileAccess.file_exists(horn_path):
+		horn_sound.stream = load(horn_path)
 	add_child(horn_sound)
 
 func apply_skin(skin_id: String):
@@ -110,9 +115,10 @@ func update_audio_pitch(delta):
 		engine_sound.pitch_scale = lerp(1.0, 2.0, speed_percent)
 
 func play_horn():
-	if horn_sound and not horn_sound.playing:
-		# horn_sound.play()
-		print("Truck Horn!")
+	if horn_sound and horn_sound.stream and not horn_sound.playing:
+		horn_sound.play()
+	else:
+		print("Truck Horn! (SFX missing)")
 
 func consume_fuel(amount):
 	fuel -= amount

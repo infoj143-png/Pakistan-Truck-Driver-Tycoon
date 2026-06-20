@@ -11,7 +11,7 @@ func _ready():
 	add_to_group("zones")
 
 func _on_body_entered(body):
-	if body.name == "Truck":
+	if body is Truck:
 		truck_entered_zone.emit(zone_type)
 		if zone_type == ZoneType.PICKUP:
 			if not body.cargo_loaded:
