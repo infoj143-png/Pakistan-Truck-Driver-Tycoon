@@ -154,7 +154,9 @@ const TRUCK_ART_COLORS = {
 }
 
 func goto_scene(path: String):
-	var current_scene = get_tree().current_scene
+	# Save game before transitioning to ensure all state (like fuel/condition) is persisted
+	save_game()
+
 	var loading_screen = load("res://ui/Loading.tscn").instantiate()
 	get_tree().root.add_child(loading_screen)
 
@@ -505,27 +507,32 @@ func refill_fuel_cost(amount: float):
 
 # Reward and Achievement Logic
 func check_daily_login():
-	var now = Time.get_date_dict_from_system()
-	var today_str = "%d-%d-%d" % [now.year, now.month, now.day]
+	var now_dict = Time.get_date_dict_from_system()
+	var today_str = "%d-%d-%d" % [now_dict.year, now_dict.month, now_dict.day]
+
+	# Create a dictionary for today at midnight to get a clean unix timestamp for comparison
+	var today_midnight = {"year": now_dict.year, "month": now_dict.month, "day": now_dict.day, "hour": 0, "minute": 0, "second": 0}
+	var today_unix = Time.get_unix_time_from_datetime_dict(today_midnight)
 
 	if last_login_date == "":
 		last_login_date = today_str
 		consecutive_logins = 1
 		reward_claimed_today = false
 	elif last_login_date != today_str:
-		# Check if it was yesterday
-		var last_date_parts = last_login_date.split("-")
-		var last_year = int(last_date_parts[0])
-		var last_month = int(last_date_parts[1])
-		var last_day = int(last_date_parts[2])
+		var last_parts = last_login_date.split("-")
+		if last_parts.size() == 3:
+			var last_midnight = {"year": int(last_parts[0]), "month": int(last_parts[1]), "day": int(last_parts[2]), "hour": 0, "minute": 0, "second": 0}
+			var last_unix = Time.get_unix_time_from_datetime_dict(last_midnight)
 
-		# Very simple yesterday check (doesn't handle month boundaries perfectly but okay for this)
-		# A better way would be using unix timestamps
-		var is_yesterday = (now.day == last_day + 1 and now.month == last_month and now.year == last_year)
+			var seconds_diff = today_unix - last_unix
+			# 86400 seconds in a day. If <= 86400, it was yesterday.
+			var is_yesterday = seconds_diff <= 86400
 
-		if is_yesterday:
-			consecutive_logins += 1
-			if consecutive_logins > 7:
+			if is_yesterday:
+				consecutive_logins += 1
+				if consecutive_logins > 7:
+					consecutive_logins = 1
+			else:
 				consecutive_logins = 1
 		else:
 			consecutive_logins = 1
@@ -601,6 +608,7 @@ func unlock_achievement(id: String):
 func save_game():
 	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
+		var weather_node = get_node_or_null("/root/WeatherManager")
 		var data = {
 			"money": money,
 			"xp": xp,
@@ -626,8 +634,8 @@ func save_game():
 			"unlocked_skins": unlocked_skins,
 			"selected_skin": selected_skin,
 			"achievement_progress": achievement_progress,
-			"current_weather": WeatherManager.current_weather,
-			"current_time": WeatherManager.current_time
+			"current_weather": weather_node.current_weather if weather_node else 0,
+			"current_time": weather_node.current_time if weather_node else 8.0
 		}
 		file.store_var(data)
 		file.close()
@@ -673,9 +681,10 @@ func load_game():
 			selected_skin = data.get("selected_skin", "default")
 			achievement_progress = data.get("achievement_progress", {})
 
-			if WeatherManager:
-				WeatherManager.current_weather = data.get("current_weather", WeatherManager.Weather.CLEAR)
-				WeatherManager.current_time = data.get("current_time", 8.0)
+			var weather_node = get_node_or_null("/root/WeatherManager")
+			if weather_node:
+				weather_node.current_weather = data.get("current_weather", 0) # 0 is Weather.CLEAR
+				weather_node.current_time = data.get("current_time", 8.0)
 
 			_unlock_cities_for_level()
 		file.close()

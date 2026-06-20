@@ -8,7 +8,7 @@ func _ready():
 	GameManager.mission_completed.connect(_on_mission_completed)
 
 func _on_mission_completed(money, xp):
-	money_text.text = "Money Earned: $" + str(money)
+	money_text.text = "Money Earned: Rs. " + str(money)
 	xp_text.text = "XP Earned: " + str(xp)
 	show()
 
