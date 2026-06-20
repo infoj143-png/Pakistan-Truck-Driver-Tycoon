@@ -28,6 +28,7 @@ var truck_id: String
 @onready var upgrade_fuel_btn = %UpgradeFuelBtn
 @onready var upgrade_cargo_btn = %UpgradeCargoBtn
 @onready var upgrade_durability_btn = %UpgradeDurabilityBtn
+@onready var refuel_button = %RefuelButton
 
 @onready var condition_label = Label.new()
 @onready var repair_button = Button.new()
@@ -57,11 +58,23 @@ func update_ui():
 		select_button.disabled = selected
 		select_button.text = "SELECTED" if selected else "SELECT"
 
+		# Refuel Logic
+		refuel_button.show()
+		var current_fuel = GameManager.fuel if selected else stats["fuel"]
+		var needed = stats["fuel"] - current_fuel
+		if needed > 0:
+			var cost = int(needed * GameManager.base_fuel_price * GameManager.cities[GameManager.current_city]["fuel_mult"])
+			refuel_button.text = "REFUEL (Rs. " + str(cost) + ")"
+			refuel_button.disabled = GameManager.money < cost
+		else:
+			refuel_button.text = "FUEL FULL"
+			refuel_button.disabled = true
+
 		# Condition and Repair
 		var condition = GameManager.owned_trucks[truck_id].get("condition", 100.0)
 		condition_label.text = "Condition: " + str(int(condition)) + "%"
 		if not condition_label.get_parent():
-			get_node("VBoxContainer").add_child(condition_label)
+			$MarginContainer/VBoxContainer.add_child(condition_label)
 
 		var repair_cost = int((100.0 - condition) * 50)
 		repair_button.text = "Repair (Rs. " + str(repair_cost) + ")"
@@ -69,7 +82,7 @@ func update_ui():
 		repair_button.disabled = GameManager.money < repair_cost
 		if not repair_button.get_parent():
 			repair_button.pressed.connect(_on_repair_pressed)
-			get_node("VBoxContainer").add_child(repair_button)
+			$MarginContainer/VBoxContainer.add_child(repair_button)
 
 		# Update bars and upgrade buttons
 		_update_stat_row(speed_bar, upgrade_speed_btn, "speed", upgrades["speed"], data["upgrade_costs"]["speed"])
@@ -80,6 +93,7 @@ func update_ui():
 		price_label.text = "Rs. " + str(data["price"])
 		buy_button.show()
 		select_button.hide()
+		refuel_button.hide()
 
 		# Show base stats in bars (0% progress for unowned)
 		speed_bar.value = 0
@@ -121,6 +135,18 @@ func _on_upgrade_cargo_btn_pressed():
 
 func _on_upgrade_durability_btn_pressed():
 	upgrade_pressed.emit(truck_id, "durability")
+
+func _on_refuel_button_pressed():
+	AudioManager.play_ui_click()
+	var stats = GameManager.get_truck_stats(truck_id)
+	var selected = GameManager.selected_truck == truck_id
+	var current_fuel = GameManager.fuel if selected else stats["fuel"]
+	var needed = stats["fuel"] - current_fuel
+
+	if needed > 0:
+		if GameManager.refill_fuel_cost(needed):
+			# Note: GameManager.refill_fuel_cost now handles setting GameManager.fuel
+			update_ui()
 
 func _on_repair_pressed():
 	if GameManager.repair_truck(truck_id):

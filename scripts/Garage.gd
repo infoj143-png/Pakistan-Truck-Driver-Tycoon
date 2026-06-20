@@ -6,6 +6,8 @@ extends Control
 @onready var skin_list = %SkinList
 @onready var skin_panel = %SkinPanel
 @onready var back_button = %Back
+@onready var message_label = %MessageLabel
+@onready var message_timer = %MessageTimer
 
 var truck_card_scene = preload("res://ui/TruckCard.tscn")
 
@@ -15,9 +17,22 @@ func _ready():
 
 	GameManager.stats_changed.connect(update_ui)
 	GameManager.skin_changed.connect(_on_skin_changed)
+	if message_timer:
+		message_timer.timeout.connect(_on_message_timeout)
 	update_ui()
 	update_skin_list()
 	_update_preview()
+
+func show_message(text: String):
+	if message_label:
+		message_label.text = text
+		message_label.show()
+		if message_timer:
+			message_timer.start()
+
+func _on_message_timeout():
+	if message_label:
+		message_label.hide()
 
 func update_ui():
 	money_label.text = "Rs. " + str(GameManager.money)
@@ -38,12 +53,14 @@ func update_ui():
 func _on_truck_buy_pressed(truck_id):
 	AudioManager.play_ui_click()
 	if GameManager.buy_truck(truck_id):
-		print("Bought truck: ", truck_id)
+		show_message("Truck Purchased!")
+	else:
+		show_message("Not enough money!")
 
 func _on_truck_select_pressed(truck_id):
 	AudioManager.play_ui_click()
 	if GameManager.select_truck(truck_id):
-		print("Selected truck: ", truck_id)
+		show_message("Truck Selected!")
 		_update_preview()
 
 func _update_preview():
@@ -82,7 +99,9 @@ func _on_skin_changed(_skin_id):
 func _on_truck_upgrade_pressed(truck_id, stat_id):
 	AudioManager.play_ui_click()
 	if GameManager.upgrade_truck(truck_id, stat_id):
-		print("Upgraded ", stat_id, " for ", truck_id)
+		show_message("Upgrade Successful!")
+	else:
+		show_message("Not enough money!")
 
 func _on_back_pressed():
 	AudioManager.play_ui_click()

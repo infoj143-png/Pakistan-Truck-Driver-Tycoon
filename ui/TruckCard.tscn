@@ -64,6 +64,12 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "SELECT"
 
+[node name="RefuelButton" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+text = "REFUEL (Rs. 0)"
+
 [node name="StatsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -214,6 +220,7 @@ text = "UP"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BuyButton" to="." method="_on_buy_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/SelectButton" to="." method="_on_select_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/RefuelButton" to="." method="_on_refuel_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/StatsContainer/SpeedRow/HBox2/UpgradeSpeedBtn" to="." method="_on_upgrade_speed_btn_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/StatsContainer/FuelRow/HBox2/UpgradeFuelBtn" to="." method="_on_upgrade_fuel_btn_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/StatsContainer/CargoRow/HBox2/UpgradeCargoBtn" to="." method="_on_upgrade_cargo_btn_pressed"]

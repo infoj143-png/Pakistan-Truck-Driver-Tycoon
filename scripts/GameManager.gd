@@ -511,6 +511,10 @@ func refill_fuel_cost(amount: float):
 
 	if money >= total_cost:
 		money -= total_cost
+		fuel += amount
+		var stats = get_truck_stats(selected_truck)
+		if stats and fuel > stats["fuel"]:
+			fuel = stats["fuel"]
 		stats_changed.emit()
 		save_game()
 		return true
