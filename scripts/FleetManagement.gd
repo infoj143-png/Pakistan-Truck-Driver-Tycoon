@@ -58,4 +58,4 @@ func _on_driver_selected(index, option_button, available_drivers):
 	update_ui()
 
 func _on_back_pressed():
-	get_tree().change_scene_to_file("res://ui/CompanyDashboard.tscn")
+	GameManager.goto_scene("res://ui/CompanyDashboard.tscn")

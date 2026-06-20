@@ -35,13 +35,13 @@ func update_ui():
 		%StatsContainer.add_child(loan_label)
 
 func _on_hiring_hall_pressed():
-	get_tree().change_scene_to_file("res://ui/HiringHall.tscn")
+	GameManager.goto_scene("res://ui/HiringHall.tscn")
 
 func _on_fleet_management_pressed():
-	get_tree().change_scene_to_file("res://ui/FleetManagement.tscn")
+	GameManager.goto_scene("res://ui/FleetManagement.tscn")
 
 func _on_bank_pressed():
-	get_tree().change_scene_to_file("res://ui/Bank.tscn")
+	GameManager.goto_scene("res://ui/Bank.tscn")
 
 func _on_daily_reports_pressed():
 	# For simplicity, we can show the last report or a list
@@ -57,4 +57,4 @@ func _on_daily_reports_pressed():
 		popup.setup(GameManager.daily_profit_history.back())
 
 func _on_back_pressed():
-	get_tree().change_scene_to_file("res://ui/MainMenu.tscn")
+	GameManager.goto_scene("res://ui/MainMenu.tscn")

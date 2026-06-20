@@ -1,12 +1,23 @@
 extends CanvasLayer
 
-@onready var money_label = $Control/HBoxContainer/MoneyLabel
-@onready var xp_label = $Control/HBoxContainer/XPLabel
-@onready var fuel_bar = $Control/FuelContainer/ProgressBar
-@onready var time_label = $Control/WeatherContainer/TimeLabel
-@onready var weather_label = $Control/WeatherContainer/WeatherLabel
+@onready var money_label = %MoneyLabel
+@onready var xp_label = %XPLabel
+@onready var fuel_bar = %ProgressBar
+@onready var time_label = $Control/WeatherPanel/WeatherContainer/MarginContainer/VBox/TimeLabel
+@onready var weather_label = $Control/WeatherPanel/WeatherContainer/MarginContainer/VBox/WeatherLabel
+
+@onready var money_panel = %MoneyPanel
+@onready var xp_panel = %XPPanel
+@onready var fuel_panel = %FuelPanel
+@onready var weather_panel = %WeatherPanel
 
 func _ready():
+	# Apply styling
+	money_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.blue, GameManager.TRUCK_ART_COLORS.yellow, 2))
+	xp_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.green, GameManager.TRUCK_ART_COLORS.white, 2))
+	fuel_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.red, GameManager.TRUCK_ART_COLORS.yellow, 2))
+	weather_panel.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.pink, GameManager.TRUCK_ART_COLORS.white, 2))
+
 	GameManager.stats_changed.connect(update_ui)
 	WeatherManager.time_changed.connect(_on_time_changed)
 	WeatherManager.weather_changed.connect(_on_weather_changed)
