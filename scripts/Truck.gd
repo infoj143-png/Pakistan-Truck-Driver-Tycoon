@@ -8,7 +8,12 @@ extends CharacterBody2D
 @export var max_fuel = 100.0
 var fuel = 100.0
 
-var cargo_loaded = false
+var cargo_loaded: bool:
+	get:
+		return GameManager.cargo_loaded
+	set(value):
+		GameManager.cargo_loaded = value
+
 var odometer = 0.0
 
 var engine_sound: AudioStreamPlayer2D

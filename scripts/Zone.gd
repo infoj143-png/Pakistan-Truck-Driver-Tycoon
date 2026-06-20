@@ -7,6 +7,9 @@ enum ZoneType { PICKUP, DELIVERY }
 
 signal truck_entered_zone(type)
 
+func _ready():
+	add_to_group("zones")
+
 func _on_body_entered(body):
 	if body.name == "Truck":
 		truck_entered_zone.emit(zone_type)

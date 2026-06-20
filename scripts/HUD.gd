@@ -10,6 +10,8 @@ extends CanvasLayer
 @onready var xp_panel = %XPPanel
 @onready var fuel_panel = %FuelPanel
 @onready var weather_panel = %WeatherPanel
+@onready var minimap = %MiniMap
+@onready var toggle_map_btn = %ToggleMapButton
 
 func _ready():
 	# Apply styling
@@ -21,6 +23,9 @@ func _ready():
 	GameManager.stats_changed.connect(update_ui)
 	WeatherManager.time_changed.connect(_on_time_changed)
 	WeatherManager.weather_changed.connect(_on_weather_changed)
+	minimap.add_theme_stylebox_override("panel", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.dark_bg, GameManager.TRUCK_ART_COLORS.yellow, 2))
+	toggle_map_btn.add_theme_stylebox_override("normal", GameManager.get_truck_art_stylebox(GameManager.TRUCK_ART_COLORS.orange, GameManager.TRUCK_ART_COLORS.white, 2))
+
 	update_ui()
 	_update_weather_ui()
 
@@ -44,3 +49,11 @@ func _on_weather_changed(_new_weather):
 
 func _update_weather_ui():
 	weather_label.text = "Weather: " + WeatherManager.get_weather_name()
+
+func _on_toggle_map_button_pressed():
+	AudioManager.play_ui_click()
+	minimap.visible = !minimap.visible
+	if minimap.visible:
+		toggle_map_btn.text = "Hide Map"
+	else:
+		toggle_map_btn.text = "Show Map"
