@@ -1,0 +1,16 @@
+# Godot 4 build files
+.godot/
+build/
+.import/
+.gdot/
+# Texture cache
+texture_cache_file.data
+
+# OS files
+.DS_Store
+Thumbs.DB
+.AppleDual.store
+
+# Package files
+*.tar.gz
+*.zip
